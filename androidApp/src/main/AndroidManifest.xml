@@ -4,6 +4,7 @@
     <application
         android:allowBackup="false"
         android:supportsRtl="true"
+        android:name=".WorkModApp"
         android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
@@ -13,5 +14,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name="com.keepqueue.workmode.auth.view.AuthActivity" />
     </application>
 </manifest> 

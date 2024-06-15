@@ -42,7 +42,14 @@ dependencies {
     implementation(projects.shared)
     implementation(libs.compose.ui)
     implementation(libs.compose.ui.tooling.preview)
+    implementation(libs.androidx.material)
     implementation(libs.compose.material3)
     implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.pref.datastore)
+
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.compose)
+
     debugImplementation(libs.compose.ui.tooling)
 }
