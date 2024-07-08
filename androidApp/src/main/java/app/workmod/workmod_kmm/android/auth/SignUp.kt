@@ -34,9 +34,9 @@ import org.koin.androidx.compose.koinViewModel
                        viewModel: AuthViewModel = koinViewModel()) {
 
     val context = LocalContext.current
-    var name by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    var name by remember { mutableStateOf("Essie") }
+    var email by remember { mutableStateOf("essie@gmail.com") }
+    var password by remember { mutableStateOf("123456") }
 
     val signUpResult by viewModel.signUpResult.collectAsState()
 

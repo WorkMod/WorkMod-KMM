@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.keepqueue.workmode.common.ui.bottombar.BottomNavItem
+import app.workmod.workmod_kmm.android.common.ui.bottombar.BottomNavItem
 
 @Composable
 fun BottomNavigationBar(navController: NavController, visibility: State<Boolean>) {
@@ -31,7 +31,7 @@ fun BottomNavigationBar(navController: NavController, visibility: State<Boolean>
                 val currentRoute = navBackStackEntry?.destination?.route
 
                 val items = listOf(
-                    BottomNavItem.Profile,
+                    BottomNavItem.Profiles,
                     BottomNavItem.Jobs,
                     BottomNavItem.Settings,
                 )

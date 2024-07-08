@@ -1,6 +1,7 @@
 package app.workmod.workmod_kmm.android
 
 import android.app.Application
+import app.workmod.workmod_kmm.android.di.prefModule
 import app.workmod.workmod_kmm.android.di.viewModelsModule
 import app.workmod.workmod_kmm.di.sharedKoinModules
 import org.koin.android.ext.koin.androidContext
@@ -14,7 +15,7 @@ class WorkModApp: Application() {
     }
 
     private fun initKoin() {
-        val modules = sharedKoinModules + viewModelsModule
+        val modules = sharedKoinModules + prefModule + viewModelsModule
         startKoin {
             androidContext(this@WorkModApp)
             modules(modules)

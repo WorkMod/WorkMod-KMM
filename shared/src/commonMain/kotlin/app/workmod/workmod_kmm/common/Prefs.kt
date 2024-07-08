@@ -10,16 +10,27 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import okio.Path.Companion.toPath
 
-const val dataStoreFileName = "workmod.preferences"
+const val dataStoreFileName = "workmod.preferences_pb"
 
-class Prefs {
+class Prefs(producePath: () -> String) {
 
     private val USER_NAME = stringPreferencesKey("userName")
     private val USER_ID = stringPreferencesKey("userId")
     private val TOKEN = stringPreferencesKey("token")
 
-    private lateinit var dataStore: DataStore<Preferences>
+    private val dataStore: DataStore<Preferences>
 
+    init {
+        dataStore = PreferenceDataStoreFactory.createWithPath(
+            corruptionHandler = null,
+            migrations = emptyList(),
+            produceFile = { producePath().toPath() },
+        )
+    }
+
+    /*
+    producePath = { context.filesDir.resolve(dataStoreFileName).absolutePath }
+     */
     /*fun createDataStore(
         producePath: () -> String,
     ): DataStore<Preferences> = PreferenceDataStoreFactory.createWithPath(
@@ -28,15 +39,14 @@ class Prefs {
         produceFile = { producePath().toPath() },
     )*/
 
-    fun createDataStore(producePath: () -> String): DataStore<Preferences> {
+    /*fun createDataStore(producePath: () -> String): DataStore<Preferences> {
         dataStore = PreferenceDataStoreFactory.createWithPath(
             corruptionHandler = null,
             migrations = emptyList(),
             produceFile = { producePath().toPath() },
         )
         return dataStore
-    }
-
+    }*/
 
     suspend fun saveLogin(userId: String, userName: String, token: String) {
         dataStore.edit {
@@ -47,9 +57,11 @@ class Prefs {
     }
 
     suspend fun isLoggedIn(): Boolean {
-        return dataStore.data.map {
+        val hasUserId = dataStore.data.map {
+            println("isLoggedIn: userId: ${it[USER_ID]}")
             !it[USER_ID].isNullOrEmpty()
         }.first()
+        return hasUserId
         /*val userId = preference.getString(USER_ID, "")
         return !userId.isNullOrEmpty()*/
     }

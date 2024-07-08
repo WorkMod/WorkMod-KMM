@@ -2,41 +2,44 @@ package app.workmod.workmod_kmm.auth.data
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.request.forms.MultiPartFormDataContent
-import io.ktor.client.request.forms.formData
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 
 class AuthService(private val client: HttpClient) {
 
-    private val AUTH_URL = "http://10.0.2.2:5000/api/"
-    private val SIGNUP = "${AUTH_URL}auth/signup"
-    private val LOGIN = "${AUTH_URL}auth/login"
-    private val LOGOUT = "${AUTH_URL}auth/logout"
+    private val AUTH_URL = "http://192.168.1.229:5000/api/"
+    //private val AUTH_URL = "http://10.0.2.2:5000/api/"
+    private val SIGNUP_URL = "${AUTH_URL}auth/signup"
+    private val LOGIN_URL = "${AUTH_URL}auth/login"
+    private val LOGOUT_URL = "${AUTH_URL}auth/logout"
 
     suspend fun signUp(userName: String, email: String, password: String): SignUpResponse {
-        val response: SignUpResponse = client.post(SIGNUP) {
-            setBody(MultiPartFormDataContent(
-                formData {
-                    append("name", userName)
-                    append("email", email)
-                    append("password", password)
-                }
-            ))
-        }.body()
-        return response
+        val response = client.post(SIGNUP_URL) {
+            contentType(ContentType.Application.Json)
+            setBody(mapOf("name" to userName,
+                    "email" to email,
+                    "password" to password))
+        }
+
+        val signUpResponse: SignUpResponse = response.body()
+        signUpResponse.statusCode = response.status.value
+
+        return signUpResponse
     }
 
     suspend fun signIn(email: String, password: String): SignInResponse {
-        val response: SignInResponse = client.post(LOGIN) {
-            setBody(MultiPartFormDataContent(
-                formData {
-                    append("email", email)
-                    append("password", password)
-                }
-            ))
-        }.body()
-        return response
+        val response = client.post(LOGIN_URL) {
+            contentType(ContentType.Application.Json)
+            setBody(mapOf("email" to email,
+                "password" to password))
+        }
+
+        val signInResponse: SignInResponse = response.body()
+        signInResponse.statusCode = response.status.value
+
+        return signInResponse
     }
 
     suspend fun signOut() {

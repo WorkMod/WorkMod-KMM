@@ -13,13 +13,22 @@ class MainViewModel (val prefs: Prefs): BaseViewModel() {
     private val _signOutResult = MutableStateFlow(BoolState())
     val signOutResult = _signOutResult.asStateFlow()
 
+    //private val _loginState = MutableStateFlow(BoolState())
+    //val
+
     fun signOut() {
         _signOutResult.value = BoolState(loading = true)
         scope.launch {
             delay(500L)
             prefs.saveLogin("", "", "")
             _signOutResult.emit(BoolState(success = true))
+            //delay(500L)
+            //_signOutResult.emit(BoolState())
         }
+    }
+
+    fun signOutReset() {
+        _signOutResult.value = BoolState()
     }
 
     suspend fun isLoggedIn(): Boolean {

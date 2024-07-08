@@ -10,5 +10,5 @@ val authModule = module {
     single<AuthService> { AuthService(get()) }
     single<SignUpUseCase> { SignUpUseCase(get()) }
     single<SignInUseCase> { SignInUseCase(get()) }
-    single<AuthViewModel> { AuthViewModel(get(), get()) }
+    single<AuthViewModel> { AuthViewModel(get(), get(), get()) }
 }

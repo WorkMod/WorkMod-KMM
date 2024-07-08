@@ -21,6 +21,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import app.workmod.workmod_kmm.MainViewModel
 import app.workmod.workmod_kmm.android.home.Screen
+import app.workmod.workmod_kmm.android.settings.Settings
 import com.keepqueue.workmode.auth.view.AuthActivity
 import com.rahbertheadvisor.android.ui.BottomNavigationBar
 import kotlinx.coroutines.launch
@@ -36,7 +37,7 @@ class MainActivity : ComponentActivity() {
         var isLoggedIn: Boolean
         runBlocking {
             //Test auth apis and fix datastore
-            isLoggedIn = false//viewModel.isLoggedIn()
+            isLoggedIn = viewModel.isLoggedIn()
         }
 
         if (!isLoggedIn) {
@@ -101,7 +102,7 @@ class MainActivity : ComponentActivity() {
                         composable(Screen.Settings.route) {
                             bottomBarState.value = true
                             //Settings(navController, showSnack)
-                            Text("Settings")
+                            Settings(navController, showSnack)
                         }
                     }
                 }

@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.skie)
 }
 
 kotlin {
@@ -28,9 +30,11 @@ kotlin {
             //put your multiplatform dependencies here
             implementation(libs.androidx.pref.datastore)
             implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.kotlinx.serialization)
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.client.logging)
 
             implementation(libs.koin.core)
         }

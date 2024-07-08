@@ -4,33 +4,41 @@ import app.workmod.workmod_kmm.BaseViewModel
 import app.workmod.workmod_kmm.auth.domain.SignInUseCase
 import app.workmod.workmod_kmm.auth.domain.SignUpUseCase
 import app.workmod.workmod_kmm.common.BoolState
+import app.workmod.workmod_kmm.common.Prefs
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class AuthViewModel(
     private val signUpUseCase: SignUpUseCase,
-    private val signInUseCase: SignInUseCase
+    private val signInUseCase: SignInUseCase,
+    private val prefs: Prefs
 ): BaseViewModel() {
 
     private val _signUpResult = MutableStateFlow<BoolState>(BoolState())
     val signUpResult = _signUpResult.asStateFlow()
+    var signUpJob: Job? = null
 
     private val _signInResult = MutableStateFlow<BoolState>(BoolState())
     val signInResult = _signInResult.asStateFlow()
+    var signInJob: Job? = null
 
     private val _signOutResult = MutableStateFlow<BoolState>(BoolState())
     val signOutResult = _signOutResult.asStateFlow()
+    var signOutJob: Job? = null
 
     //INTEGRATE DATASTORE
 
     fun signUp(name: String, email: String, password: String) {
-        scope.launch(Dispatchers.IO) {
+        signUpJob?.cancel()
+        signUpJob = scope.launch(Dispatchers.IO) {
             try {
                 val response = signUpUseCase.signUp(name, email, password)
                 if (response.statusCode == 201) {
+                    prefs.saveLogin(response.userId, response.userName, response.token)
                     _signUpResult.emit(BoolState(success = true, false))
                 } else {
                     _signUpResult.emit(BoolState(success = false, loading = false, error = response.message))
@@ -41,19 +49,29 @@ class AuthViewModel(
         }
     }
 
+    fun signUpReset() {
+        _signUpResult.value = BoolState()
+    }
+
     fun signIn(email: String, password: String) {
-        scope.launch(Dispatchers.IO) {
+        signInJob?.cancel()
+        signInJob = scope.launch(Dispatchers.IO) {
             try {
                 val response = signInUseCase.signIn(email, password)
-                if (response.statusCode == 201) {
+                if (response.statusCode == 200) {
+                    prefs.saveLogin(response.userId, response.userName, response.token)
                     _signInResult.emit(BoolState(success = true, false))
                 } else {
                     _signInResult.emit(BoolState(success = false, loading = false, error = response.message))
                 }
             } catch (e: Exception) {
-                _signUpResult.emit(BoolState(success = false, loading = false, error = e.message ?: ""))
+                _signInResult.emit(BoolState(success = false, loading = false, error = e.message ?: ""))
             }
         }
+    }
+
+    fun signInReset() {
+        _signInResult.value = BoolState()
     }
 
     /*fun signOut() {
