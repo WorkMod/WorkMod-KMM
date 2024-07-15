@@ -11,6 +11,10 @@
 		058557D9273AAEEB004C7B11 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 058557D8273AAEEB004C7B11 /* Preview Assets.xcassets */; };
 		2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2152FB032600AC8F00CF470E /* iOSApp.swift */; };
 		510573EA2C397B42005B6820 /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 510573E92C397B42005B6820 /* SignUpView.swift */; };
+		511FEB832C44985F00FB6A81 /* AllProfilesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 511FEB822C44985F00FB6A81 /* AllProfilesView.swift */; };
+		511FEB852C44987000FB6A81 /* AddProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 511FEB842C44987000FB6A81 /* AddProfileView.swift */; };
+		511FEB872C44988D00FB6A81 /* ProfileDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 511FEB862C44988D00FB6A81 /* ProfileDetailView.swift */; };
+		511FEB892C449C9C00FB6A81 /* FirstAppear.swift in Sources */ = {isa = PBXBuildFile; fileRef = 511FEB882C449C9C00FB6A81 /* FirstAppear.swift */; };
 		5174EBB92C377926003B5EEA /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5174EBB82C377926003B5EEA /* SettingsView.swift */; };
 		51EF17DA2C25B49400C61E79 /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51EF17D92C25B49400C61E79 /* SignInView.swift */; };
 		51EF17DD2C25BD6000C61E79 /* MainUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51EF17DC2C25BD6000C61E79 /* MainUIView.swift */; };
@@ -37,6 +41,10 @@
 		058557D8273AAEEB004C7B11 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		2152FB032600AC8F00CF470E /* iOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSApp.swift; sourceTree = "<group>"; };
 		510573E92C397B42005B6820 /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
+		511FEB822C44985F00FB6A81 /* AllProfilesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllProfilesView.swift; sourceTree = "<group>"; };
+		511FEB842C44987000FB6A81 /* AddProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProfileView.swift; sourceTree = "<group>"; };
+		511FEB862C44988D00FB6A81 /* ProfileDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileDetailView.swift; sourceTree = "<group>"; };
+		511FEB882C449C9C00FB6A81 /* FirstAppear.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstAppear.swift; sourceTree = "<group>"; };
 		5174EBB82C377926003B5EEA /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		51EF17D92C25B49400C61E79 /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
 		51EF17DC2C25BD6000C61E79 /* MainUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainUIView.swift; sourceTree = "<group>"; };
@@ -66,6 +74,16 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		511FEB812C4490C600FB6A81 /* profiles */ = {
+			isa = PBXGroup;
+			children = (
+				511FEB822C44985F00FB6A81 /* AllProfilesView.swift */,
+				511FEB842C44987000FB6A81 /* AddProfileView.swift */,
+				511FEB862C44988D00FB6A81 /* ProfileDetailView.swift */,
+			);
+			path = profiles;
+			sourceTree = "<group>";
+		};
 		5174EBB72C37790F003B5EEA /* settings */ = {
 			isa = PBXGroup;
 			children = (
@@ -77,6 +95,7 @@
 		51EF17D72C25B46F00C61E79 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				511FEB812C4490C600FB6A81 /* profiles */,
 				5174EBB72C37790F003B5EEA /* settings */,
 				51EF17DB2C25BB4D00C61E79 /* home */,
 				51EF17D82C25B47600C61E79 /* auth */,
@@ -114,6 +133,7 @@
 			isa = PBXGroup;
 			children = (
 				51EF17E02C2849FC00C61E79 /* UIViewController.swift */,
+				511FEB882C449C9C00FB6A81 /* FirstAppear.swift */,
 			);
 			path = ui;
 			sourceTree = "<group>";
@@ -249,9 +269,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				5174EBB92C377926003B5EEA /* SettingsView.swift in Sources */,
+				511FEB892C449C9C00FB6A81 /* FirstAppear.swift in Sources */,
 				51EF17DA2C25B49400C61E79 /* SignInView.swift in Sources */,
 				51EF17DD2C25BD6000C61E79 /* MainUIView.swift in Sources */,
+				511FEB872C44988D00FB6A81 /* ProfileDetailView.swift in Sources */,
 				2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */,
+				511FEB852C44987000FB6A81 /* AddProfileView.swift in Sources */,
+				511FEB832C44985F00FB6A81 /* AllProfilesView.swift in Sources */,
 				510573EA2C397B42005B6820 /* SignUpView.swift in Sources */,
 				7555FF83242A565900829871 /* ContentView.swift in Sources */,
 				51EF17E12C2849FC00C61E79 /* UIViewController.swift in Sources */,

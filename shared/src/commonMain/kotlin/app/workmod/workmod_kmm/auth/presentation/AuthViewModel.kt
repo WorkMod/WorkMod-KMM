@@ -18,15 +18,15 @@ class AuthViewModel(
     private val prefs: Prefs
 ): BaseViewModel() {
 
-    private val _signUpResult = MutableStateFlow<BoolState>(BoolState())
+    private val _signUpResult = MutableStateFlow(BoolState())
     val signUpResult = _signUpResult.asStateFlow()
-    var signUpJob: Job? = null
+    private var signUpJob: Job? = null
 
-    private val _signInResult = MutableStateFlow<BoolState>(BoolState())
+    private val _signInResult = MutableStateFlow(BoolState())
     val signInResult = _signInResult.asStateFlow()
-    var signInJob: Job? = null
+    private var signInJob: Job? = null
 
-    private val _signOutResult = MutableStateFlow<BoolState>(BoolState())
+    private val _signOutResult = MutableStateFlow(BoolState())
     val signOutResult = _signOutResult.asStateFlow()
     var signOutJob: Job? = null
 

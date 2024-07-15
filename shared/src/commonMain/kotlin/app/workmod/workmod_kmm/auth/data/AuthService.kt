@@ -9,11 +9,11 @@ import io.ktor.http.contentType
 
 class AuthService(private val client: HttpClient) {
 
-    private val AUTH_URL = "http://192.168.1.229:5000/api/"
-    //private val AUTH_URL = "http://10.0.2.2:5000/api/"
-    private val SIGNUP_URL = "${AUTH_URL}auth/signup"
-    private val LOGIN_URL = "${AUTH_URL}auth/login"
-    private val LOGOUT_URL = "${AUTH_URL}auth/logout"
+    private val AUTH_URL = "http://192.168.1.229:5000/api/auth"
+    //private val AUTH_URL = "http://10.0.2.2:5000/api/auth"
+    private val SIGNUP_URL = "${AUTH_URL}/signup"
+    private val LOGIN_URL = "${AUTH_URL}/login"
+    private val LOGOUT_URL = "${AUTH_URL}/logout"
 
     suspend fun signUp(userName: String, email: String, password: String): SignUpResponse {
         val response = client.post(SIGNUP_URL) {

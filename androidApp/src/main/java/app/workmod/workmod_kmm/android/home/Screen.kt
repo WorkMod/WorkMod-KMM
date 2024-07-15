@@ -1,9 +1,9 @@
 package app.workmod.workmod_kmm.android.home
 
-enum class Screen(val route: String) {
-    Profiles("profile-all"),
-    ProfileDetails("profile-details"),
-    ProfileAdd("profile-add"),
-    Jobs("jobs"),
-    Settings("settings")
+sealed class Screen(val route: String) {
+    data object Profiles: Screen("profile-all")
+    data object ProfileDetails: Screen("profile-details?id={id}")
+    data object ProfileAdd: Screen("profile-add?id={id}")
+    data object Jobs: Screen("jobs")
+    data object Settings: Screen("settings")
 }

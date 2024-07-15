@@ -20,8 +20,8 @@ struct MainUIView: View {
     var body: some View {
         TabView(selection: $selectedIndex) {
                     NavigationStack() {
-                        Text("Profiles")
-                            .navigationTitle("Profiles")
+                        AllProfilesView(viewModel: .init(), onItemClick: {})
+                            .navigationTitle("All Profiles")
                     }
                     .tabItem {
                         Text("Profiles")

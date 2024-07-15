@@ -2,6 +2,7 @@ package app.workmod.workmod_kmm.di
 
 import app.workmod.workmod_kmm.MainViewModel
 import app.workmod.workmod_kmm.auth.presentation.AuthViewModel
+import app.workmod.workmod_kmm.profile.presentation.ProfileViewModel
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.context.startKoin
@@ -17,6 +18,10 @@ fun initKoin() {
 
 class AuthInjector: KoinComponent {
     val authViewModel: AuthViewModel by inject()
+}
+
+class ProfileInjector: KoinComponent {
+    val profileViewModel: ProfileViewModel by inject()
 }
 
 class MainInjector: KoinComponent {
