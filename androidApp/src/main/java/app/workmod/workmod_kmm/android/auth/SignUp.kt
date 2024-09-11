@@ -29,9 +29,9 @@ import app.workmod.workmod_kmm.android.MainActivity
 import app.workmod.workmod_kmm.auth.presentation.AuthViewModel
 import org.koin.androidx.compose.koinViewModel
 
-@Composable fun SignUp(navController: NavHostController,
-                       showSnack: (message: String) -> Unit,
-                       viewModel: AuthViewModel = koinViewModel()) {
+@Composable fun SignUp(viewModel: AuthViewModel = koinViewModel(),
+                       navController: NavHostController,
+                       showSnack: (message: String) -> Unit) {
 
     val context = LocalContext.current
     var name by remember { mutableStateOf("Essie") }

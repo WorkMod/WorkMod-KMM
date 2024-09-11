@@ -9,6 +9,7 @@
 import SwiftUI
 
 struct ProfileDetailView: View {
+    static let tag: String = "ProfileDetailView"
     var body: some View {
         Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
     }

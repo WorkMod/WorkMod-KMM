@@ -7,6 +7,7 @@ import app.workmod.workmod_kmm.profile.domain.DeleteProfileUseCase
 import app.workmod.workmod_kmm.profile.domain.GetAllProfilesUseCase
 import app.workmod.workmod_kmm.profile.domain.GetProfileUseCase
 import app.workmod.workmod_kmm.profile.domain.UpdateProfileUseCase
+import app.workmod.workmod_kmm.profile.domain.model.Education
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.Job
@@ -48,11 +49,11 @@ class ProfileViewModel(
         getProfileJob = scope.launch(Dispatchers.IO) {
             try {
                 val response = getProfileUseCase.get(profileId)
-                if (response.statusCode == 200) {
+                if (response.code == 200) {
                     _getProfileResult.emit(
                         GetProfileResult(
                             success = true,
-                            profile = response.profile
+                            profile = response.data
                         )
                     )
                 } else {
@@ -73,11 +74,11 @@ class ProfileViewModel(
         getAllProfilesJob = scope.launch(Dispatchers.IO) {
             try {
                 val response = getAllProfilesUseCase.get()
-                if (response.statusCode == 200) {
+                if (response.code == 200) {
                     _getAllProfilesResult.emit(
                         GetAllProfilesResult(
                             success = true,
-                            profiles = response.profiles
+                            profiles = response.data ?: listOf()
                         )
                     )
                 } else {
@@ -98,6 +99,7 @@ class ProfileViewModel(
         name: String,
         designation: String,
         email: String,
+        educations: List<Education>,
         phone: String,
         address: String,
         nationality: String,
@@ -118,6 +120,7 @@ class ProfileViewModel(
                         name,
                         designation,
                         email,
+                        educations,
                         phone,
                         address,
                         nationality,

@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import app.workmod.workmod_kmm.profile.data.Profile
+import app.workmod.workmod_kmm.profile.domain.model.Profile
 
 @Composable
 fun ProfileItem(profile: Profile, navController: NavHostController) {

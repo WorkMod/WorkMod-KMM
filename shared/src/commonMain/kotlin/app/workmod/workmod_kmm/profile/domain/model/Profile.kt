@@ -1,4 +1,4 @@
-package app.workmod.workmod_kmm.profile.data
+package app.workmod.workmod_kmm.profile.domain.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -11,6 +11,10 @@ data class Profile(
     @SerialName("name") val name: String,
     @SerialName("designation") val designation: String,
     @SerialName("email") val email: String,
+
+    val educations: List<Education> = listOf(),
+    val employments: List<Employment> = listOf(),
+
     @SerialName("phone") val phone: String,
     @SerialName("address") val address: String,
     @SerialName("nationality") val nationality: String,

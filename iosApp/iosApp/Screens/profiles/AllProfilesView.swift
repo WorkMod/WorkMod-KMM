@@ -15,11 +15,11 @@ extension AllProfilesView {
     class AllProfilesViewModelWrapper: ObservableObject {
         
         let profileViewModel: ProfileViewModel
-        var onItemClick: () -> Void
+        var onItemClick: (String) -> Void
         
         init() {
             self.profileViewModel = ProfileInjector().profileViewModel
-            self.onItemClick = {}
+            self.onItemClick = {_ in}
             self.getAllProfilesResult = profileViewModel.getAllProfilesResult.value
         }
         
@@ -45,7 +45,7 @@ struct AllProfilesView: View {
     
     @ObservedObject private(set) var viewModel: AllProfilesViewModelWrapper
     
-    init(viewModel: AllProfilesViewModelWrapper, onItemClick: @escaping() -> Void) {
+    init(viewModel: AllProfilesViewModelWrapper, onItemClick: @escaping(String) -> Void) {
         self.viewModel = viewModel
         self.viewModel.onItemClick = onItemClick
     }
@@ -66,7 +66,9 @@ struct AllProfilesView: View {
                 ScrollView {
                     LazyVStack(spacing: 10) {
                         ForEach(viewModel.getAllProfilesResult.profiles, id: \.self) { profile in
-                            ProfileItemView(profile: profile)
+                            ProfileItemView(profile: profile, onItemClick: { id in
+                                viewModel.onItemClick(id)
+                            })
                         }
                     }
                 }
@@ -89,14 +91,20 @@ struct AllProfilesAppBar: View {
 }
 
 struct ProfileItemView: View {
+    
     var profile: Profile
+    var onItemClick: (String) -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
 
             Text(profile.title)
-                .font(.title)
-                .fontWeight(.bold)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .font(.title3)
+                .fontWeight(.regular)
+        }
+        .onTapGesture {
+            onItemClick(profile.id)
         }
         .padding(16)
     }

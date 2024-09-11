@@ -2,15 +2,21 @@ package app.workmod.workmod_kmm.android.profile
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -27,9 +33,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import app.workmod.workmod_kmm.android.common.ui.DialogOkCancel
+import app.workmod.workmod_kmm.profile.domain.model.Education
+import app.workmod.workmod_kmm.profile.domain.model.Employment
+import app.workmod.workmod_kmm.profile.domain.model.Profile
 import app.workmod.workmod_kmm.profile.presentation.ProfileViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -88,7 +101,9 @@ fun ProfileDetails(navController: NavHostController,
             )
         }
     ) { padding ->
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .padding(padding)) {
             if (profileResult.loading || deleteProfileResult.loading) {
                 CircularProgressIndicator(
                     modifier = Modifier
@@ -100,17 +115,25 @@ fun ProfileDetails(navController: NavHostController,
             }
             if (profileResult.success) {
                 titleString.value = profileResult.profile?.title ?: ""
-                Card(modifier = Modifier.padding(16.dp)) {
-                    Column {
-                        Text(text = profileResult.profile?.title ?: "")
-                        Text(text = profileResult.profile?.name ?: "")
-                        Text(text = profileResult.profile?.designation ?: "")
-                        Text(text = profileResult.profile?.name ?: "")
-                        Text(text = profileResult.profile?.phone ?: "")
-                        Text(text = profileResult.profile?.address ?: "")
-                        Text(text = profileResult.profile?.nationality ?: "")
-                        Text(text = profileResult.profile?.description ?: "")
+                profileResult.profile?.let {profile ->
+                    Card(modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth()) {
+                        Column(modifier = Modifier
+                            .fillMaxWidth().verticalScroll(rememberScrollState())
+                            .padding(0.dp)) {
+                            ProfileHeader(profile)
+                            Spacer(modifier = Modifier.height(12.dp))
+                            EmploymentDetails(profile.employments)
+                            //Spacer(modifier = Modifier.height(12.dp))
+                            EducationDetails(profile.educations)
+                            Spacer(modifier = Modifier.height(12.dp))
+                            ProfileFooter(profile)
+                            EducationDetails(profile.educations)
+                        }
                     }
+                } ?: run {
+                    Text(text = "Empty profile!")
                 }
             } else if (profileResult.error.isNotEmpty()) {
                 Column(modifier = Modifier
@@ -144,6 +167,103 @@ fun ProfileDetails(navController: NavHostController,
                     showDeleteDialog.value = false
                 }
             )
+        }
+    }
+}
+
+@Composable
+private fun ProfileHeader(profile: Profile) {
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .padding(top = 20.dp, start = 10.dp, end = 10.dp),
+        horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(text = profile.name)
+        Text(text = profile.designation)
+        Text(text = profile.email)
+    }
+}
+
+@Composable
+private fun EmploymentDetails(employments: List<Employment>) {
+    Card(modifier = Modifier.padding(12.dp), colors = CardDefaults.cardColors(
+        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+    )) {
+        Column(modifier = Modifier.padding(16.dp).fillMaxWidth()) {
+            Text(text = "Employments",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = Color.Black,
+                textDecoration = TextDecoration.Underline)
+            for (employment in employments) {
+                EmploymentItem(employment)
+                Spacer(modifier = Modifier.height(6.dp))
+            }
+        }
+    }
+}
+
+@Composable
+private fun EmploymentItem(employment: Employment) {
+    Column {
+        Text(text = employment.title,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.Black,)
+        Text(text = employment.company,
+            fontSize = 16.sp,
+            color = Color.DarkGray)
+        Text(text = employment.from + " - " + employment.to,
+            fontSize = 14.sp,
+            color = Color(1, 53, 8, 255))
+    }
+}
+
+@Composable
+private fun EducationDetails(educations: List<Education>) {
+    Card(modifier = Modifier.padding(12.dp), colors = CardDefaults.cardColors(
+        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+    )) {
+        Column(modifier = Modifier.padding(16.dp).fillMaxWidth()) {
+            Text(text = "Educations",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = Color.Black,
+                textDecoration = TextDecoration.Underline)
+            for (education in educations) {
+                EducationItem(education = education)
+                Spacer(modifier = Modifier.height(6.dp))
+            }
+        }
+    }
+}
+
+@Composable
+private fun EducationItem(education: Education) {
+    Column {
+        Text(text = education.title,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.Black)
+        Text(text = education.school,
+            fontSize = 16.sp,
+            color = Color.DarkGray)
+        Text(text = education.from + " - " + education.to,
+            fontSize = 14.sp,
+            color = Color(1, 53, 8, 255))
+    }
+}
+
+@Composable
+private fun ProfileFooter(profile: Profile) {
+    Card(
+        /*colors = CardDefaults.cardColors(
+        containerColor = Color.Green,)*/
+    ) {
+        Column(modifier = Modifier.padding(16.dp).fillMaxWidth()) {
+            Text(text = profile.phone)
+            Text(text = profile.address)
+            Text(text = profile.nationality)
+            Text(text = profile.description)
         }
     }
 }

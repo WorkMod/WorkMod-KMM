@@ -29,9 +29,9 @@ import app.workmod.workmod_kmm.android.MainActivity
 import app.workmod.workmod_kmm.auth.presentation.AuthViewModel
 import org.koin.androidx.compose.koinViewModel
 
-@Composable fun SignIn(navController: NavHostController,
-                       showSnack: (message: String) -> Unit,
-                       viewModel: AuthViewModel = koinViewModel()) {
+@Composable fun SignIn(viewModel: AuthViewModel = koinViewModel(),
+                       navController: NavHostController,
+                       showSnack: (message: String) -> Unit) {
 
     val context = LocalContext.current
     var email by remember { mutableStateOf("riyas@gmail.com") }

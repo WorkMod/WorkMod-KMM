@@ -1,5 +1,6 @@
 package app.workmod.workmod_kmm.auth.data
 
+import app.workmod.workmod_kmm.common.Constants
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.post
@@ -9,7 +10,8 @@ import io.ktor.http.contentType
 
 class AuthService(private val client: HttpClient) {
 
-    private val AUTH_URL = "http://192.168.1.229:5000/api/auth"
+    private val AUTH_URL = "${Constants.BASE_URL}/api/auth"
+    //private val AUTH_URL = "http://192.168.1.229:5000/api/auth"
     //private val AUTH_URL = "http://10.0.2.2:5000/api/auth"
     private val SIGNUP_URL = "${AUTH_URL}/signup"
     private val LOGIN_URL = "${AUTH_URL}/login"

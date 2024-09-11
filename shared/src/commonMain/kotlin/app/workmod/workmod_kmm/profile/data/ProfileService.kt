@@ -1,6 +1,13 @@
 package app.workmod.workmod_kmm.profile.data
 
+import app.workmod.workmod_kmm.common.ApiResponse
 import app.workmod.workmod_kmm.common.Prefs
+import app.workmod.workmod_kmm.profile.data.response.AddProfileResponse
+import app.workmod.workmod_kmm.profile.data.response.DeleteProfileResponse
+import app.workmod.workmod_kmm.profile.data.response.GetAllProfilesResponse
+import app.workmod.workmod_kmm.profile.data.response.GetProfileResponse
+import app.workmod.workmod_kmm.profile.domain.model.Education
+import app.workmod.workmod_kmm.profile.domain.model.Profile
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.delete
@@ -19,7 +26,7 @@ class ProfileService constructor(
 ) {
 
     private val _profilesUrl = "http://192.168.1.229:5000/api/profile/"
-    //private val _profilesUrl = "http://10.0.2.2:5000/api/profile/"
+    //private val _profilesUrl = "${Constants.BASE_URL}/api/profile/"
 
     private val _getUrl = _profilesUrl
     private val _getAllUrl = "${_profilesUrl}all"
@@ -28,7 +35,7 @@ class ProfileService constructor(
     private val _deleteUrl = _profilesUrl
 
 
-    suspend fun getProfile(profileId: String): GetProfileResponse {
+    suspend fun getProfile(profileId: String): ApiResponse<Profile> {
         val token = prefs.getToken()
         val response = client.get("${_getUrl}$profileId") {
             contentType(ContentType.Application.Json)
@@ -37,12 +44,16 @@ class ProfileService constructor(
         }
 
         val getProfileResponse: GetProfileResponse = response.body()
-        getProfileResponse.statusCode = response.status.value
+        val apiResponse = ApiResponse(
+            response.status.value,
+            getProfileResponse.profile?.toProfile(),
+            getProfileResponse.message
+        )
 
-        return getProfileResponse
+        return apiResponse
     }
 
-    suspend fun getAllProfiles(): GetAllProfilesResponse {
+    suspend fun getAllProfiles(): ApiResponse<List<Profile>> {
         val token = prefs.getToken()
         val response = client.get(_getAllUrl) {
             contentType(ContentType.Application.Json)
@@ -50,9 +61,13 @@ class ProfileService constructor(
         }
 
         val getAllProfileResponse: GetAllProfilesResponse = response.body()
-        getAllProfileResponse.statusCode = response.status.value
+        val apiResponse = ApiResponse(
+            response.status.value,
+            getAllProfileResponse.profiles.map { it.toProfile() },
+            getAllProfileResponse.message
+        )
 
-        return getAllProfileResponse
+        return apiResponse
     }
 
     suspend fun addProfile(
@@ -60,6 +75,7 @@ class ProfileService constructor(
         name: String,
         designation: String,
         email: String,
+        educations: List<Education>,
         phone: String,
         address: String,
         nationality: String,
@@ -71,12 +87,14 @@ class ProfileService constructor(
         val response = client.post(_addUrl) {
             contentType(ContentType.Application.Json)
             headers { append("Authorization", "Bearer $token") }
+
             setBody(
                 mapOf(
                     "title" to title,
                     "name" to name,
                     "designation" to designation,
                     "email" to email,
+                    "educations" to educations.toTypedArray(),
                     "phone" to phone,
                     "address" to address,
                     "nationality" to nationality,

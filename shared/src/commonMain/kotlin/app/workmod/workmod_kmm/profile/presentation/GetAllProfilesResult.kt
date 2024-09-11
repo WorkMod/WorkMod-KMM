@@ -1,6 +1,6 @@
 package app.workmod.workmod_kmm.profile.presentation
 
-import app.workmod.workmod_kmm.profile.data.Profile
+import app.workmod.workmod_kmm.profile.domain.model.Profile
 
 data class GetAllProfilesResult(
     val success: Boolean = false,

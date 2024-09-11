@@ -13,15 +13,43 @@ struct MainUIView: View {
     @State private var selectedIndex: Int = 0
     var onSignOut: () -> Void
     
+    @State private var navPathProfiles: NavigationPath = .init()
+    
     init(onSignOut: @escaping () -> Void) {
         self.onSignOut = onSignOut
     }
     
     var body: some View {
         TabView(selection: $selectedIndex) {
-                    NavigationStack() {
+            NavigationStack(path: $navPathProfiles) {
                         AllProfilesView(viewModel: .init(), onItemClick: {})
                             .navigationTitle("All Profiles")
+                            .toolbar {
+                                ToolbarItem {
+                                    Button {
+                                        navPathProfiles.append(AddProfilesView.tag)
+                                    } label: {
+                                        Label("New", systemImage: "info.circle").labelStyle(.titleAndIcon)
+                                    }
+                                }
+                            }.navigationDestination(for: String.self) { path in
+                                switch path {
+                                case ProfileDetailView.tag:
+                                    ProfileDetailView()
+                                case AddProfileView.tag:
+                                    AddProfilesView(viewModel: .init(), 
+                                        profileId: <#T##String?#>,
+                                        onProfileAdded: {
+                                        
+                                    },
+                                        onProfileUpdated: {
+                                        
+                                    })
+                                default:
+                                    Text("Some view")
+                                }
+                            }
+                        
                     }
                     .tabItem {
                         Text("Profiles")

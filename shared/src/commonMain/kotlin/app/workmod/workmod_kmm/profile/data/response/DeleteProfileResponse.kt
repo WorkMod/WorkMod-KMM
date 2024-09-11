@@ -1,11 +1,10 @@
-package app.workmod.workmod_kmm.profile.data
+package app.workmod.workmod_kmm.profile.data.response
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class GetProfileResponse(
+data class DeleteProfileResponse(
     @SerialName("statusCode") var statusCode: Int = 0,
-    @SerialName("profile") val profile: Profile? = null,
     @SerialName("message") val message: String = ""
 )

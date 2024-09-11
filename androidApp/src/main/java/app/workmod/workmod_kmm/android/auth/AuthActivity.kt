@@ -15,18 +15,22 @@ import androidx.navigation.compose.rememberNavController
 import app.workmod.workmod_kmm.android.auth.Destination
 import app.workmod.workmod_kmm.android.auth.SignIn
 import app.workmod.workmod_kmm.android.auth.SignUp
+import app.workmod.workmod_kmm.auth.presentation.AuthViewModel
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AuthActivity: ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
+        val viewModel: AuthViewModel by viewModel()
         setContent {
 
             val navController = rememberNavController()
             val scope = rememberCoroutineScope()
             val snackbarHostState = remember { SnackbarHostState() }
+
 
             val showSnack = fun(message: String) {
                 scope.launch {
@@ -41,10 +45,10 @@ class AuthActivity: ComponentActivity() {
             ) { padding ->
                 NavHost(navController = navController, startDestination = Destination.SignIn.route) {
                     composable(Destination.SignIn.route) {
-                        SignIn(navController, showSnack)
+                        SignIn(viewModel, navController, showSnack)
                     }
                     composable(Destination.SignUp.route) {
-                        SignUp(navController, showSnack)
+                        SignUp(viewModel, navController, showSnack)
                     }
                 }
             }

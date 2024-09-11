@@ -3,12 +3,24 @@ package app.workmod.workmod_kmm.android.profile
 import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Divider
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -22,9 +34,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import app.workmod.workmod_kmm.profile.domain.model.Education
 import app.workmod.workmod_kmm.profile.presentation.ProfileViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -35,15 +48,23 @@ fun AddProfile(navController: NavHostController,
                viewModel: ProfileViewModel = koinViewModel()
 ) {
 
-    val context = LocalContext.current
     var title by remember { mutableStateOf("iOS Developer") }
     var name by remember { mutableStateOf("Riyas Edathadathil") }
     var designation by remember { mutableStateOf("iOS Developer") }
     var email by remember { mutableStateOf("riyas@gmail.com") }
+
     var phone by remember { mutableStateOf("07384184458") }
-    var address by remember { mutableStateOf("32 Selsdon Road") }
     var nationality by remember { mutableStateOf("Indian") }
+    var address by remember { mutableStateOf("32 Selsdon Road") }
     var description by remember { mutableStateOf("I am an awesome iOS Developer") }
+
+    var educationList by remember { mutableStateOf(listOf<Education>()) }
+    var educationTitle by remember { mutableStateOf("") }
+    var educationSchool by remember { mutableStateOf("") }
+    var educationFrom by remember { mutableStateOf("") }
+    var educationTo by remember { mutableStateOf("") }
+
+    var counter by remember { mutableStateOf(0) }
 
     editProfileId?.let {
         LaunchedEffect(Unit) {
@@ -60,6 +81,7 @@ fun AddProfile(navController: NavHostController,
                 address = it.address
                 nationality = it.nationality
                 description = it.description
+                educationList = it.educations.toMutableList()
             }
         }
     }
@@ -96,81 +118,180 @@ fun AddProfile(navController: NavHostController,
                     trackColor = MaterialTheme.colorScheme.surfaceVariant,
                 )
             }
-            Card(modifier = Modifier.align(Alignment.Center)) {
-                Column(modifier = Modifier.padding(10.dp)) {
+
+            Column(modifier = Modifier
+                .padding(10.dp)
+                .verticalScroll(rememberScrollState())
+                .align(Alignment.Center)) {
+                Card(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 10.dp)) {
                     TextField(value = title,
-                        placeholder = { Text(text = "Enter profile title") },
+                        label = { Text(text = "Profile title") },
                         onValueChange = { title = it})
-                    TextField(value = name,
-                        placeholder = { Text(text = "Enter name") },
-                        onValueChange = { name = it})
-                    TextField(value = designation,
-                        placeholder = { Text(text = "Enter designation") },
-                        onValueChange = { designation = it})
-                    TextField(value = email,
-                        placeholder = { Text(text = "Enter email") },
-                        onValueChange = { email = it})
-                    TextField(value = phone,
-                        placeholder = { Text(text = "Enter phone") },
-                        onValueChange = { phone = it})
-                    TextField(value = address,
-                        placeholder = { Text(text = "Enter address") },
-                        onValueChange = { address = it})
-                    TextField(value = nationality,
-                        placeholder = { Text(text = "Enter nationality") },
-                        onValueChange = { nationality = it})
-                    TextField(value = description,
-                        placeholder = { Text(text = "Enter description") },
-                        onValueChange = { description = it })
-                    Button(modifier = Modifier
-                        .padding(top = 10.dp)
-                        .align(Alignment.CenterHorizontally),
-                        onClick = {
-                            showSnack.invoke("Hellooo!")
-                            if (name.isBlank()) {
-                                showSnack.invoke("Enter name!")
-                            } else if (designation.isBlank()) {
-                                showSnack.invoke("Enter designation!")
-                            } else if (email.isBlank()) {
-                                showSnack.invoke("Enter email!")
-                            } else if (phone.isBlank()) {
-                                showSnack.invoke("Enter phone!")
-                            } else if (address.isBlank()) {
-                                showSnack.invoke("Enter address!")
-                            } else if (nationality.isBlank()) {
-                                showSnack.invoke("Enter nationality!")
-                            } else if (description.isBlank()) {
-                                showSnack.invoke("Enter description!")
-                            } else {
-                                if (editProfileId.isNullOrEmpty()) {
-                                    Log.d(Screen.AddProfile.route, "viewModel.addProfile()")
-                                    viewModel.addProfile(
-                                        title,
-                                        name,
-                                        designation,
-                                        email,
-                                        phone,
-                                        address,
-                                        nationality,
-                                        description
-                                    )
-                                } else {
-                                    viewModel.updateProfile(
-                                        editProfileId,
-                                        title,
-                                        name,
-                                        designation,
-                                        email,
-                                        phone,
-                                        address,
-                                        nationality,
-                                        description
+                }
+
+                Divider(modifier = Modifier
+                    .width(IntrinsicSize.Min)
+                    .height(10.dp))
+                Card(modifier = Modifier.fillMaxWidth()) {
+                    Column {
+                        TextField(value = name,
+                            label = { Text(text = "Name") },
+                            onValueChange = { name = it})
+                        TextField(value = designation,
+                            label = { Text(text = "Designation") },
+                            onValueChange = { designation = it})
+                        TextField(value = email,
+                            label = { Text(text = "Email") },
+                            onValueChange = { email = it})
+                    }
+                }
+
+                Divider(modifier = Modifier
+                    .width(IntrinsicSize.Min)
+                    .height(10.dp))
+
+                Card(modifier = Modifier.fillMaxWidth()) {
+                    Column(modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally) {
+                        educationList.forEachIndexed { index, education ->
+                            Row {
+                                Text(text = education.title)
+                                IconButton(
+                                    onClick = {
+                                        val newList = educationList.toMutableList()
+                                        newList.removeAt(index)
+                                        educationList = newList
+                                    }
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Delete,
+                                        contentDescription = null,
+                                        tint = Color.Red
                                     )
                                 }
                             }
+                            Text(text = education.school)
+                            Row {
+                                Text(text = education.from)
+                                Text(text = education.to)
+                            }
+                            Spacer(modifier = Modifier.height(4.dp))
+                        }
+
+
+                        Row {
+                            TextField(value = educationTitle,
+                                label = { Text(text = "Title") },
+                                onValueChange = { educationTitle = it })
+                        }
+                        TextField(value = educationSchool,
+                            label = { Text(text = "School") },
+                            onValueChange = { educationSchool = it })
+                        Row {
+                            TextField(value = educationFrom,
+                                label = { Text(text = "From") },
+                                onValueChange = { educationFrom = it })
+                            TextField(value = educationTo,
+                                label = { Text(text = "To") },
+                                onValueChange = { educationTo = it })
+                        }
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Button(modifier = Modifier, onClick = {
+                            if (educationTitle.isBlank()
+                                || educationSchool.isBlank()
+                                || educationFrom.isBlank()
+                                || educationTo.isBlank()) {
+                                showSnack.invoke("Enter all education details!")
+                                return@Button
+                            }
+
+                            val newList = educationList + listOf(Education(
+                                id = "", title = educationTitle, school = educationSchool,
+                                from = educationFrom, to = educationTo
+                            ))
+                            educationTitle = ""
+                            educationSchool = ""
+                            educationFrom = ""
+                            educationTo = ""
+                            educationList = newList
                         }) {
-                        Text(if (editProfileId.isNullOrEmpty()) "Add Profile" else "Update Profile")
+                            Text("Add Education")
+                        }
                     }
+                }
+
+                Divider(modifier = Modifier
+                    .width(IntrinsicSize.Min)
+                    .height(10.dp))
+
+                Card(modifier = Modifier.fillMaxWidth()) {
+                    Column {
+                        TextField(value = phone,
+                            label = { Text(text = "Phone") },
+                            onValueChange = { phone = it})
+                        TextField(value = nationality,
+                            label = { Text(text = "Nationality") },
+                            onValueChange = { nationality = it})
+                        TextField(value = address,
+                            label = { Text(text = "Address") },
+                            onValueChange = { address = it})
+                        TextField(value = description,
+                            label = { Text(text = "Description") },
+                            onValueChange = { description = it })
+                    }
+                }
+
+                Button(modifier = Modifier
+                    .padding(top = 10.dp)
+                    .align(Alignment.CenterHorizontally),
+                    onClick = {
+                        showSnack.invoke("Hellooo!")
+                        if (name.isBlank()) {
+                            showSnack.invoke("Enter name!")
+                        } else if (designation.isBlank()) {
+                            showSnack.invoke("Enter designation!")
+                        } else if (email.isBlank()) {
+                            showSnack.invoke("Enter email!")
+                        } else if (phone.isBlank()) {
+                            showSnack.invoke("Enter phone!")
+                        } else if (address.isBlank()) {
+                            showSnack.invoke("Enter address!")
+                        } else if (nationality.isBlank()) {
+                            showSnack.invoke("Enter nationality!")
+                        } else if (description.isBlank()) {
+                            showSnack.invoke("Enter description!")
+                        } else {
+                            if (editProfileId.isNullOrEmpty()) {
+                                Log.d(Screen.AddProfile.route, "viewModel.addProfile()")
+                                viewModel.addProfile(
+                                    title,
+                                    name,
+                                    designation,
+                                    email,
+                                    educationList,
+                                    phone,
+                                    address,
+                                    nationality,
+                                    description
+                                )
+                            } else {
+                                viewModel.updateProfile(
+                                    editProfileId,
+                                    title,
+                                    name,
+                                    designation,
+                                    email,
+                                    phone,
+                                    address,
+                                    nationality,
+                                    description
+                                )
+                            }
+                        }
+                    }) {
+                    Text(if (editProfileId.isNullOrEmpty()) "Add Profile" else "Update Profile")
                 }
             }
         }
