@@ -1,6 +1,7 @@
 package app.workmod.workmod_kmm.android.profile
 
 import android.util.Log
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -14,13 +15,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -34,10 +31,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import app.workmod.workmod_kmm.profile.domain.model.Education
+import app.workmod.workmod_kmm.profile.domain.model.Employment
 import app.workmod.workmod_kmm.profile.presentation.ProfileViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -57,6 +54,12 @@ fun AddProfile(navController: NavHostController,
     var nationality by remember { mutableStateOf("Indian") }
     var address by remember { mutableStateOf("32 Selsdon Road") }
     var description by remember { mutableStateOf("I am an awesome iOS Developer") }
+
+    var employmentList by remember { mutableStateOf(listOf<Employment>()) }
+    var employmentTitle by remember { mutableStateOf("") }
+    var employmentCompany by remember { mutableStateOf("") }
+    var employmentFrom by remember { mutableStateOf("") }
+    var employmentTo by remember { mutableStateOf("") }
 
     var educationList by remember { mutableStateOf(listOf<Education>()) }
     var educationTitle by remember { mutableStateOf("") }
@@ -82,6 +85,7 @@ fun AddProfile(navController: NavHostController,
                 nationality = it.nationality
                 description = it.description
                 educationList = it.educations.toMutableList()
+                employmentList = it.employments.toMutableList()
             }
         }
     }
@@ -155,44 +159,68 @@ fun AddProfile(navController: NavHostController,
                 Card(modifier = Modifier.fillMaxWidth()) {
                     Column(modifier = Modifier.fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally) {
-                        educationList.forEachIndexed { index, education ->
-                            Row {
-                                Text(text = education.title)
-                                IconButton(
-                                    onClick = {
-                                        val newList = educationList.toMutableList()
-                                        newList.removeAt(index)
-                                        educationList = newList
-                                    }
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Delete,
-                                        contentDescription = null,
-                                        tint = Color.Red
-                                    )
-                                }
+                        EmploymentDetails(employments = employmentList) {deleteIndex ->
+                            val newList = employmentList.toMutableList()
+                            newList.removeAt(deleteIndex)
+                            employmentList = newList
+                        }
+                        TextField(value = employmentTitle,
+                            label = { Text(text = "Title") },
+                            onValueChange = { employmentTitle = it })
+                        TextField(value = employmentCompany,
+                            label = { Text(text = "Company") },
+                            onValueChange = { employmentCompany = it })
+                        Row(horizontalArrangement = Arrangement.SpaceEvenly) {
+                            TextField(value = employmentFrom,
+                                label = { Text(text = "From") },
+                                onValueChange = { employmentFrom = it })
+                            Spacer(modifier = Modifier.width(10.dp))
+                            TextField(value = employmentTo,
+                                label = { Text(text = "To") },
+                                onValueChange = { employmentTo = it })
+                        }
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Button(modifier = Modifier, onClick = {
+                            if (employmentTitle.isBlank()
+                                || employmentCompany.isBlank()
+                                || employmentFrom.isBlank()
+                                || employmentTo.isBlank()) {
+                                showSnack.invoke("Enter all employment details!")
+                                return@Button
                             }
-                            Text(text = education.school)
-                            Row {
-                                Text(text = education.from)
-                                Text(text = education.to)
-                            }
-                            Spacer(modifier = Modifier.height(4.dp))
+
+                            val newList = employmentList + listOf(Employment(
+                                id = "", title = employmentTitle, company = employmentCompany,
+                                from = employmentFrom, to = employmentTo
+                            ))
+                            employmentTitle = ""
+                            employmentCompany = ""
+                            employmentFrom = ""
+                            employmentTo = ""
+                            employmentList = newList
+                        }) {
+                            Text("Add Employment")
                         }
 
+                        Divider(modifier = Modifier.height(6.dp).padding(vertical = 2.dp))
 
-                        Row {
-                            TextField(value = educationTitle,
-                                label = { Text(text = "Title") },
-                                onValueChange = { educationTitle = it })
+
+                        EducationDetails(educations = educationList) {deleteIndex ->
+                            val newList = educationList.toMutableList()
+                            newList.removeAt(deleteIndex)
+                            educationList = newList
                         }
+                        TextField(value = educationTitle,
+                            label = { Text(text = "Title") },
+                            onValueChange = { educationTitle = it })
                         TextField(value = educationSchool,
                             label = { Text(text = "School") },
                             onValueChange = { educationSchool = it })
-                        Row {
+                        Row(horizontalArrangement = Arrangement.SpaceEvenly) {
                             TextField(value = educationFrom,
                                 label = { Text(text = "From") },
                                 onValueChange = { educationFrom = it })
+                            Spacer(modifier = Modifier.width(10.dp))
                             TextField(value = educationTo,
                                 label = { Text(text = "To") },
                                 onValueChange = { educationTo = it })

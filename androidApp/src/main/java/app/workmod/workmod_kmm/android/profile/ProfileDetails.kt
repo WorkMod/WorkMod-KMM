@@ -16,7 +16,6 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -33,15 +32,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import app.workmod.workmod_kmm.android.common.ui.DialogOkCancel
-import app.workmod.workmod_kmm.profile.domain.model.Education
-import app.workmod.workmod_kmm.profile.domain.model.Employment
 import app.workmod.workmod_kmm.profile.domain.model.Profile
 import app.workmod.workmod_kmm.profile.presentation.ProfileViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -120,7 +113,8 @@ fun ProfileDetails(navController: NavHostController,
                         .padding(16.dp)
                         .fillMaxWidth()) {
                         Column(modifier = Modifier
-                            .fillMaxWidth().verticalScroll(rememberScrollState())
+                            .fillMaxWidth()
+                            .verticalScroll(rememberScrollState())
                             .padding(0.dp)) {
                             ProfileHeader(profile)
                             Spacer(modifier = Modifier.height(12.dp))
@@ -184,82 +178,14 @@ private fun ProfileHeader(profile: Profile) {
 }
 
 @Composable
-private fun EmploymentDetails(employments: List<Employment>) {
-    Card(modifier = Modifier.padding(12.dp), colors = CardDefaults.cardColors(
-        containerColor = MaterialTheme.colorScheme.surfaceContainer,
-    )) {
-        Column(modifier = Modifier.padding(16.dp).fillMaxWidth()) {
-            Text(text = "Employments",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = Color.Black,
-                textDecoration = TextDecoration.Underline)
-            for (employment in employments) {
-                EmploymentItem(employment)
-                Spacer(modifier = Modifier.height(6.dp))
-            }
-        }
-    }
-}
-
-@Composable
-private fun EmploymentItem(employment: Employment) {
-    Column {
-        Text(text = employment.title,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.Black,)
-        Text(text = employment.company,
-            fontSize = 16.sp,
-            color = Color.DarkGray)
-        Text(text = employment.from + " - " + employment.to,
-            fontSize = 14.sp,
-            color = Color(1, 53, 8, 255))
-    }
-}
-
-@Composable
-private fun EducationDetails(educations: List<Education>) {
-    Card(modifier = Modifier.padding(12.dp), colors = CardDefaults.cardColors(
-        containerColor = MaterialTheme.colorScheme.surfaceContainer,
-    )) {
-        Column(modifier = Modifier.padding(16.dp).fillMaxWidth()) {
-            Text(text = "Educations",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = Color.Black,
-                textDecoration = TextDecoration.Underline)
-            for (education in educations) {
-                EducationItem(education = education)
-                Spacer(modifier = Modifier.height(6.dp))
-            }
-        }
-    }
-}
-
-@Composable
-private fun EducationItem(education: Education) {
-    Column {
-        Text(text = education.title,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.Black)
-        Text(text = education.school,
-            fontSize = 16.sp,
-            color = Color.DarkGray)
-        Text(text = education.from + " - " + education.to,
-            fontSize = 14.sp,
-            color = Color(1, 53, 8, 255))
-    }
-}
-
-@Composable
 private fun ProfileFooter(profile: Profile) {
     Card(
         /*colors = CardDefaults.cardColors(
         containerColor = Color.Green,)*/
     ) {
-        Column(modifier = Modifier.padding(16.dp).fillMaxWidth()) {
+        Column(modifier = Modifier
+            .padding(16.dp)
+            .fillMaxWidth()) {
             Text(text = profile.phone)
             Text(text = profile.address)
             Text(text = profile.nationality)
