@@ -33,7 +33,7 @@ data class ProfileDto(
         phone = this.phone,
         address = this.address,
         nationality = this.nationality,
-        description = this.nationality
+        description = this.description
     )
 }
 

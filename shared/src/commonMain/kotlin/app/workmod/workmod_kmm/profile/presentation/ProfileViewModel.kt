@@ -8,6 +8,7 @@ import app.workmod.workmod_kmm.profile.domain.GetAllProfilesUseCase
 import app.workmod.workmod_kmm.profile.domain.GetProfileUseCase
 import app.workmod.workmod_kmm.profile.domain.UpdateProfileUseCase
 import app.workmod.workmod_kmm.profile.domain.model.Education
+import app.workmod.workmod_kmm.profile.domain.model.Employment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.Job
@@ -99,6 +100,7 @@ class ProfileViewModel(
         name: String,
         designation: String,
         email: String,
+        employments: List<Employment>,
         educations: List<Education>,
         phone: String,
         address: String,
@@ -120,6 +122,7 @@ class ProfileViewModel(
                         name,
                         designation,
                         email,
+                        employments,
                         educations,
                         phone,
                         address,
@@ -154,6 +157,8 @@ class ProfileViewModel(
         name: String,
         designation: String,
         email: String,
+        employments: List<Employment>,
+        educations: List<Education>,
         phone: String,
         address: String,
         nationality: String,
@@ -168,6 +173,8 @@ class ProfileViewModel(
                     name,
                     designation,
                     email,
+                    employments,
+                    educations,
                     phone,
                     address,
                     nationality,

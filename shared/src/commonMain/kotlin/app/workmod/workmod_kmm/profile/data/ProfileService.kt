@@ -1,12 +1,16 @@
 package app.workmod.workmod_kmm.profile.data
 
 import app.workmod.workmod_kmm.common.ApiResponse
+import app.workmod.workmod_kmm.common.Constants.DOWNLOAD_BUFFER_SIZE
 import app.workmod.workmod_kmm.common.Prefs
+import app.workmod.workmod_kmm.profile.data.model.AddProfileModel
 import app.workmod.workmod_kmm.profile.data.response.AddProfileResponse
 import app.workmod.workmod_kmm.profile.data.response.DeleteProfileResponse
+import app.workmod.workmod_kmm.profile.data.response.DownloadProfileResponse
 import app.workmod.workmod_kmm.profile.data.response.GetAllProfilesResponse
 import app.workmod.workmod_kmm.profile.data.response.GetProfileResponse
 import app.workmod.workmod_kmm.profile.domain.model.Education
+import app.workmod.workmod_kmm.profile.domain.model.Employment
 import app.workmod.workmod_kmm.profile.domain.model.Profile
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -15,10 +19,16 @@ import io.ktor.client.request.get
 import io.ktor.client.request.headers
 import io.ktor.client.request.parameter
 import io.ktor.client.request.post
+import io.ktor.client.request.prepareGet
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
+import io.ktor.http.ContentDisposition.Companion.File
 import io.ktor.http.ContentType
+import io.ktor.http.contentLength
 import io.ktor.http.contentType
+import io.ktor.utils.io.ByteReadChannel
+import io.ktor.utils.io.core.isEmpty
+import io.ktor.utils.io.core.readBytes
 
 class ProfileService constructor(
     private val client: HttpClient,
@@ -33,6 +43,7 @@ class ProfileService constructor(
     private val _addUrl = _profilesUrl
     private val _updateUrl = _profilesUrl
     private val _deleteUrl = _profilesUrl
+    private val _downloadProfileUrl = "${_profilesUrl}download-profile/"
 
 
     suspend fun getProfile(profileId: String): ApiResponse<Profile> {
@@ -75,6 +86,7 @@ class ProfileService constructor(
         name: String,
         designation: String,
         email: String,
+        employments: List<Employment>,
         educations: List<Education>,
         phone: String,
         address: String,
@@ -88,18 +100,17 @@ class ProfileService constructor(
             contentType(ContentType.Application.Json)
             headers { append("Authorization", "Bearer $token") }
 
-            setBody(
-                mapOf(
-                    "title" to title,
-                    "name" to name,
-                    "designation" to designation,
-                    "email" to email,
-                    "educations" to educations.toTypedArray(),
-                    "phone" to phone,
-                    "address" to address,
-                    "nationality" to nationality,
-                    "description" to description
-                )
+            setBody(AddProfileModel(
+                title = title,
+                name = name,
+                designation = designation,
+                email = email,
+                employments = employments,
+                educations = educations,
+                phone = phone,
+                address = address,
+                nationality = nationality,
+                description = description)
             )
         }
 
@@ -115,6 +126,8 @@ class ProfileService constructor(
         name: String,
         designation: String,
         email: String,
+        employments: List<Employment>,
+        educations: List<Education>,
         phone: String,
         address: String,
         nationality: String,
@@ -128,18 +141,35 @@ class ProfileService constructor(
             headers { append("Authorization", "Bearer $token") }
             parameter("profileId", profileId)
             setBody(
+                AddProfileModel(
+                    profileId = profileId,
+                    title = title,
+                    name = name,
+                    designation = designation,
+                    email = email,
+                    employments = employments,
+                    educations = educations,
+                    phone = phone,
+                    address = address,
+                    nationality = nationality,
+                    description = description
+                )
+            )
+            /*setBody(
                 mapOf(
                     "profileId" to profileId,
                     "title" to title,
                     "name" to name,
                     "designation" to designation,
                     "email" to email,
+                    "employments" to employments,
+                    "educations" to educations,
                     "phone" to phone,
                     "address" to address,
                     "nationality" to nationality,
                     "description" to description
                 )
-            )
+            )*/
         }
 
         val addProfileResponse: AddProfileResponse = response.body()
@@ -161,6 +191,40 @@ class ProfileService constructor(
         deleteProfileResponse.statusCode = response.status.value
 
         return deleteProfileResponse
+    }
+
+    suspend fun downloadProfile(profileId: String): ApiResponse<DownloadProfileResponse> {
+        val token = prefs.getToken()
+        val response = client.get("${_downloadProfileUrl}$profileId") {
+            contentType(ContentType.Application.Json)
+            headers { append("Authorization", "Bearer $token") }
+            parameter("profileId", profileId)
+        }
+
+        //https://github.com/ktorio/ktor-documentation/blob/2.3.3/codeSnippets/snippets/client-download-streaming/src/main/kotlin/com/example/Application.kt
+
+        //create common Write file method for android and iOS
+        //val file = File.createTempFile("files", "index")
+        client.prepareGet("https://ktor.io/").execute { httpResponse ->
+            val channel: ByteReadChannel = httpResponse.body()
+            while (!channel.isClosedForRead) {
+                val packet = channel.readRemaining(DOWNLOAD_BUFFER_SIZE.toLong())
+                while (!packet.isEmpty) {
+                    val bytes = packet.readBytes()
+                    file.appendBytes(bytes)
+                    println("Received ${file.length()} bytes from ${httpResponse.contentLength()}")
+                }
+            }
+            println("A file saved to ${file.path}")
+        }
+        val downloadProfileResponse: DownloadProfileResponse = response.body()
+        val apiResponse = ApiResponse(
+            response.status.value,
+            getProfileResponse.profile?.toProfile(),
+            getProfileResponse.message
+        )
+
+        return apiResponse
     }
 
 }

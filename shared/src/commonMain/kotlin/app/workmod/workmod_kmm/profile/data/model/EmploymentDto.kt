@@ -6,15 +6,15 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class EmploymentDto(
     val id: String,
-    val designation: String,
-    val employer: String,
+    val title: String,
+    val company: String,
     val from: String,
     val to: String
 ) {
     fun toEmployment() = Employment(
         id = this.id,
-        title = this.designation,
-        company = this.employer,
+        title = this.title,
+        company = this.company,
         from = this.from,
         to = this.to
     )

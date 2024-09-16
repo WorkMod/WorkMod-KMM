@@ -118,12 +118,14 @@ fun ProfileDetails(navController: NavHostController,
                             .padding(0.dp)) {
                             ProfileHeader(profile)
                             Spacer(modifier = Modifier.height(12.dp))
-                            EmploymentDetails(profile.employments)
-                            //Spacer(modifier = Modifier.height(12.dp))
-                            EducationDetails(profile.educations)
-                            Spacer(modifier = Modifier.height(12.dp))
+                            if (profile.employments.isNotEmpty()) {
+                                EmploymentDetails(profile.employments)
+                            }
+                            if (profile.educations.isNotEmpty()) {
+                                EducationDetails(profile.educations)
+                            }
+                            Spacer(modifier = Modifier.height(4.dp))
                             ProfileFooter(profile)
-                            EducationDetails(profile.educations)
                         }
                     }
                 } ?: run {
