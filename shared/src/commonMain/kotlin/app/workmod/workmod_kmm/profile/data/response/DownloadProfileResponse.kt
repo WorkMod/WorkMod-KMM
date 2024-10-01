@@ -1,7 +1,11 @@
 package app.workmod.workmod_kmm.profile.data.response
 
-data class DownloadProfileResponse(
-    val status: Boolean,
-    val filePath: String
+import kotlinx.serialization.Serializable
 
+@Serializable
+data class DownloadProfileResponse(
+    var status: Boolean = false,
+    val cloudUrl: String = "",
+    var localUrl: String = "",
+    val message: String = ""
 )

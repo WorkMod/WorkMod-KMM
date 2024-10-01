@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -67,7 +68,8 @@ class MainActivity : ComponentActivity() {
                 }
 
                 Scaffold(
-                    bottomBar = { BottomNavigationBar(navController = navController, bottomBarState) }
+                    snackbarHost = { SnackbarHost(hostState = snackbarHostState)},
+                    bottomBar = { BottomNavigationBar(navController = navController, bottomBarState) },
                 ) { padding ->
                     NavHost(modifier = Modifier.padding(padding),
                         navController = navController, startDestination = Screen.Profiles.route) {

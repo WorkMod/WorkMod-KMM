@@ -1,7 +1,9 @@
 package app.workmod.workmod_kmm.profile.data
 
 import app.workmod.workmod_kmm.common.ApiResponse
+import app.workmod.workmod_kmm.common.Constants
 import app.workmod.workmod_kmm.common.Constants.DOWNLOAD_BUFFER_SIZE
+import app.workmod.workmod_kmm.common.FileWriter
 import app.workmod.workmod_kmm.common.Prefs
 import app.workmod.workmod_kmm.profile.data.model.AddProfileModel
 import app.workmod.workmod_kmm.profile.data.response.AddProfileResponse
@@ -22,7 +24,6 @@ import io.ktor.client.request.post
 import io.ktor.client.request.prepareGet
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
-import io.ktor.http.ContentDisposition.Companion.File
 import io.ktor.http.ContentType
 import io.ktor.http.contentLength
 import io.ktor.http.contentType
@@ -35,8 +36,9 @@ class ProfileService constructor(
     private val prefs: Prefs
 ) {
 
-    private val _profilesUrl = "http://192.168.1.229:5000/api/profile/"
-    //private val _profilesUrl = "${Constants.BASE_URL}/api/profile/"
+    //private val _profilesUrl = "http://192.168.1.229:5000/api/profile/"
+    //private val _profilesUrl = "http://192.168.1.229:5000/api/profile/"
+    private val _profilesUrl = "${Constants.BASE_URL}/api/profile/"
 
     private val _getUrl = _profilesUrl
     private val _getAllUrl = "${_profilesUrl}all"
@@ -193,35 +195,47 @@ class ProfileService constructor(
         return deleteProfileResponse
     }
 
-    suspend fun downloadProfile(profileId: String): ApiResponse<DownloadProfileResponse> {
+    suspend fun downloadProfile(fileWriter: FileWriter, profileId: String): ApiResponse<DownloadProfileResponse> {
         val token = prefs.getToken()
-        val response = client.get("${_downloadProfileUrl}$profileId") {
+        val url = "${_downloadProfileUrl}$profileId"
+        val response = client.get(url) {
             contentType(ContentType.Application.Json)
             headers { append("Authorization", "Bearer $token") }
             parameter("profileId", profileId)
         }
 
+        val downloadResponse: DownloadProfileResponse = response.body()
         //https://github.com/ktorio/ktor-documentation/blob/2.3.3/codeSnippets/snippets/client-download-streaming/src/main/kotlin/com/example/Application.kt
 
-        //create common Write file method for android and iOS
-        //val file = File.createTempFile("files", "index")
-        client.prepareGet("https://ktor.io/").execute { httpResponse ->
+        val cloudUrl = Constants.BASE_URL + "/api/file/profiles/cv/" + downloadResponse.cloudUrl
+        client.prepareGet(cloudUrl){
+            contentType(ContentType.Application.Json)
+            headers { append("Authorization", "Bearer $token") }
+        }.execute { httpResponse ->
             val channel: ByteReadChannel = httpResponse.body()
+            fileWriter.setFile("$profileId.txt")
+            var downloaded = 0
             while (!channel.isClosedForRead) {
                 val packet = channel.readRemaining(DOWNLOAD_BUFFER_SIZE.toLong())
                 while (!packet.isEmpty) {
                     val bytes = packet.readBytes()
-                    file.appendBytes(bytes)
-                    println("Received ${file.length()} bytes from ${httpResponse.contentLength()}")
+                    val data = bytes.decodeToString()
+                    downloaded += bytes.size
+                    fileWriter.writeBytes(bytes)
+                    val msg = "Received $data, $downloaded bytes from ${httpResponse.contentLength()}"
+                    println(msg)
+
+                    //Downloading and reading file working. now find a way to
+                    //write the data to a file
                 }
             }
-            println("A file saved to ${file.path}")
+            println("A file saved to ${fileWriter.getFilePath()}")
         }
-        val downloadProfileResponse: DownloadProfileResponse = response.body()
+
         val apiResponse = ApiResponse(
             response.status.value,
-            getProfileResponse.profile?.toProfile(),
-            getProfileResponse.message
+            downloadResponse,
+            response.status.description
         )
 
         return apiResponse

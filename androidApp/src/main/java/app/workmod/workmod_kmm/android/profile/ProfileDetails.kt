@@ -32,6 +32,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import app.workmod.workmod_kmm.android.common.ui.DialogOkCancel
@@ -52,7 +53,9 @@ fun ProfileDetails(navController: NavHostController,
     val titleString  = remember { mutableStateOf("") }
 
     val deleteProfileResult by viewModel.deleteProfileResult.collectAsState()
+    val downloadProfileResult by viewModel.downloadProfileResult.collectAsState()
 
+    val context = LocalContext.current
     LaunchedEffect(Unit) {
         viewModel.getProfile(profileId)
     }
@@ -61,6 +64,12 @@ fun ProfileDetails(navController: NavHostController,
         viewModel.deleteProfileReset()
         navController.popBackStack()
     }
+    if (downloadProfileResult.success) {
+        showSnack("CV downloaded" + downloadProfileResult.filePath)
+    } else if (downloadProfileResult.error.isNotEmpty()){
+        showSnack("CV download error: ${downloadProfileResult.error}")
+    }
+
 
     Scaffold(
         topBar = {
@@ -97,7 +106,9 @@ fun ProfileDetails(navController: NavHostController,
         Box(modifier = Modifier
             .fillMaxSize()
             .padding(padding)) {
-            if (profileResult.loading || deleteProfileResult.loading) {
+            if (profileResult.loading
+                || deleteProfileResult.loading
+                || downloadProfileResult.loading) {
                 CircularProgressIndicator(
                     modifier = Modifier
                         .width(64.dp)
@@ -126,6 +137,11 @@ fun ProfileDetails(navController: NavHostController,
                             }
                             Spacer(modifier = Modifier.height(4.dp))
                             ProfileFooter(profile)
+                            Button(onClick = {
+                                viewModel.downloadProfile(profileId, context.filesDir.path)
+                            }) {
+                                Text("Download CV")
+                            }
                         }
                     }
                 } ?: run {

@@ -3,6 +3,7 @@ package app.workmod.workmod_kmm.profile.di
 import app.workmod.workmod_kmm.profile.data.ProfileService
 import app.workmod.workmod_kmm.profile.domain.AddProfileUseCase
 import app.workmod.workmod_kmm.profile.domain.DeleteProfileUseCase
+import app.workmod.workmod_kmm.profile.domain.DownloadProfileUseCase
 import app.workmod.workmod_kmm.profile.domain.GetAllProfilesUseCase
 import app.workmod.workmod_kmm.profile.domain.GetProfileUseCase
 import app.workmod.workmod_kmm.profile.domain.UpdateProfileUseCase
@@ -16,5 +17,6 @@ val profileModule = module {
     single<AddProfileUseCase> { AddProfileUseCase(get()) }
     single<UpdateProfileUseCase> { UpdateProfileUseCase(get()) }
     single<DeleteProfileUseCase> { DeleteProfileUseCase(get()) }
-    single<ProfileViewModel> { ProfileViewModel(get(), get(), get(), get(), get()) }
+    single<DownloadProfileUseCase> { DownloadProfileUseCase(get()) }
+    single<ProfileViewModel> { ProfileViewModel(get(), get(), get(), get(), get(), get()) }
 }

@@ -2,8 +2,10 @@ package app.workmod.workmod_kmm.profile.presentation
 
 import app.workmod.workmod_kmm.BaseViewModel
 import app.workmod.workmod_kmm.common.BoolState
+import app.workmod.workmod_kmm.common.FileWriter
 import app.workmod.workmod_kmm.profile.domain.AddProfileUseCase
 import app.workmod.workmod_kmm.profile.domain.DeleteProfileUseCase
+import app.workmod.workmod_kmm.profile.domain.DownloadProfileUseCase
 import app.workmod.workmod_kmm.profile.domain.GetAllProfilesUseCase
 import app.workmod.workmod_kmm.profile.domain.GetProfileUseCase
 import app.workmod.workmod_kmm.profile.domain.UpdateProfileUseCase
@@ -22,7 +24,8 @@ class ProfileViewModel(
     private val getAllProfilesUseCase: GetAllProfilesUseCase,
     private val addProfileUseCase: AddProfileUseCase,
     private val updateProfileUseCase: UpdateProfileUseCase,
-    private val deleteProfileUseCase: DeleteProfileUseCase
+    private val deleteProfileUseCase: DeleteProfileUseCase,
+    private val downloadProfileUseCase: DownloadProfileUseCase,
 ) : BaseViewModel() {
 
     private val _getProfileResult = MutableStateFlow(GetProfileResult())
@@ -44,6 +47,10 @@ class ProfileViewModel(
     private val _deleteProfileResult = MutableStateFlow(BoolState())
     val deleteProfileResult = _deleteProfileResult.asStateFlow()
     private var deleteProfileJob: Job? = null
+
+    private val _downloadProfileResult = MutableStateFlow(DownloadProfileResult())
+    val downloadProfileResult = _downloadProfileResult.asStateFlow()
+    private var downloadProfileJob: Job? = null
 
     fun getProfile(profileId: String) {
         getProfileJob?.cancel()
@@ -213,6 +220,32 @@ class ProfileViewModel(
 
     fun deleteProfileReset() {
         _deleteProfileResult.value = BoolState()
+    }
+
+
+    fun downloadProfile(profileId: String, dir: String) {
+        downloadProfileJob?.cancel()
+        downloadProfileJob = scope.launch(Dispatchers.IO) {
+            try {
+                val fileWriter = FileWriter(dir)
+                //fileWriter.setFile("$profileId.txt")
+                val response = downloadProfileUseCase.get(fileWriter, profileId)
+                if (response.code == 200) {
+                    _downloadProfileResult.emit(
+                        DownloadProfileResult(success = true,
+                        filePath = response.data?.localUrl)
+                    )
+                } else {
+                    _downloadProfileResult.emit(DownloadProfileResult(error = response.message))
+                }
+            } catch (e: Exception) {
+                _downloadProfileResult.emit(DownloadProfileResult(error = e.message ?: ""))
+            }
+        }
+    }
+
+    fun dowloadProfileReset() {
+        _downloadProfileResult.value = DownloadProfileResult()
     }
 
 }
