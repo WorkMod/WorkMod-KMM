@@ -207,13 +207,13 @@ class ProfileService constructor(
         val downloadResponse: DownloadProfileResponse = response.body()
         //https://github.com/ktorio/ktor-documentation/blob/2.3.3/codeSnippets/snippets/client-download-streaming/src/main/kotlin/com/example/Application.kt
 
-        val cloudUrl = Constants.BASE_URL + "/api/file/profiles/cv/" + downloadResponse.cloudUrl
+        val cloudUrl = Constants.BASE_URL + "/api/file/profiles/cv/" + downloadResponse.cloudFileName
         client.prepareGet(cloudUrl){
             contentType(ContentType.Application.Json)
             headers { append("Authorization", "Bearer $token") }
         }.execute { httpResponse ->
             val channel: ByteReadChannel = httpResponse.body()
-            fileWriter.setFile("$profileId.txt")
+            fileWriter.setFile(downloadResponse.cloudFileName)
             var downloaded = 0
             while (!channel.isClosedForRead) {
                 val packet = channel.readRemaining(DOWNLOAD_BUFFER_SIZE.toLong())
@@ -230,6 +230,7 @@ class ProfileService constructor(
                 }
             }
             println("A file saved to ${fileWriter.getFilePath()}")
+            downloadResponse.localUrl = fileWriter.getFilePath()
         }
 
         val apiResponse = ApiResponse(
