@@ -35,11 +35,11 @@ kotlin {
             implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.client.logging)
-
             implementation(libs.koin.core)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation(libs.test.mockk.common)
         }
 
         androidMain.dependencies {
@@ -47,9 +47,16 @@ kotlin {
             implementation(libs.ktor.client.android)
         }
 
+        val androidUnitTest by getting {
+            dependencies {
+                implementation(libs.test.mockk.jvm)
+            }
+        }
+
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
         }
+
     }
 
     task("testClasses")
@@ -65,4 +72,7 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+}
+dependencies {
+    testImplementation("org.junit.jupiter:junit-jupiter:5.11.3")
 }
