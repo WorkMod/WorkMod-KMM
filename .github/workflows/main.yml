@@ -46,7 +46,21 @@ jobs:
           echo Add other actions to the build,
           echo test and deploy your project
         
+  unit-test:
+    needs: [lint]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v2
 
+      - name: Run tests
+        run: ./gradlew test
+
+      - name: Upload test report
+        uses: actions/upload-artifact@v2
+        with:
+          name: unit_test_report
+          path: shared/build/reports/tests/testDebugUnitTest/
       
       
     
