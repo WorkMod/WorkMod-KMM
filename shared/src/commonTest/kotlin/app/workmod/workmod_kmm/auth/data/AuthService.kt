@@ -1,32 +1,17 @@
 package app.workmod.workmod_kmm.auth.data
 
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.HttpClientEngine
-import io.ktor.client.engine.cio.CIO
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.request.HttpRequestBuilder
-import io.ktor.client.request.post
-import io.ktor.client.request.setBody
-import io.ktor.client.statement.HttpResponse
-import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
-import io.ktor.http.contentType
 import io.ktor.http.headersOf
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.utils.io.ByteReadChannel
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.mockk
-import io.mockk.mockkStatic
-import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import kotlin.test.AfterTest
-import kotlin.test.Asserter
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -80,6 +65,7 @@ class AuthServiceTest {
         coVerify { client.post(postUrl, builder) }
     }*/
 
+    //https://ktor.io/docs/client-testing.htm
     @Test fun signupTest()  = runBlocking {
 
         val userName = "name"
@@ -108,6 +94,42 @@ class AuthServiceTest {
     }
 
     private fun getSignupResponse() = """
+         {
+            "statusCode": 200,
+            "userId": "123",
+            "name": "Riyas",
+            "token": "ABC",
+            "message": "Success"
+         }
+    """.trimIndent()
+
+    @Test fun signInTest()  = runBlocking {
+
+        val email = "email"
+        val password = "password"
+
+        val engine = MockEngine { request ->
+            respond(
+                content = ByteReadChannel(getSignInResponse()),
+                status = HttpStatusCode.OK,
+                headers = headersOf(HttpHeaders.ContentType, "application/json")
+            )
+        }
+
+        client = HttpClient(engine) {
+            install(ContentNegotiation) {
+                json()
+            }
+        }
+
+        authService = AuthService(client)
+
+        val response = authService.signIn(email, password)
+
+        assertEquals("ABC", response.token)
+    }
+
+    private fun getSignInResponse() = """
          {
             "statusCode": 200,
             "userId": "123",
