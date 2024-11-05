@@ -30,6 +30,7 @@ import io.ktor.http.contentType
 import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.core.isEmpty
 import io.ktor.utils.io.core.readBytes
+import io.ktor.utils.io.readRemaining
 
 class ProfileService constructor(
     private val client: HttpClient,
@@ -217,7 +218,7 @@ class ProfileService constructor(
             var downloaded = 0
             while (!channel.isClosedForRead) {
                 val packet = channel.readRemaining(DOWNLOAD_BUFFER_SIZE.toLong())
-                while (!packet.isEmpty) {
+                while (!packet.exhausted()) {
                     val bytes = packet.readBytes()
                     val data = bytes.decodeToString()
                     downloaded += bytes.size

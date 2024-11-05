@@ -31,20 +31,26 @@ kotlin {
             implementation(libs.androidx.pref.datastore)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.serialization)
+
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.client.logging)
+
             implementation(libs.koin.core)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
             implementation(libs.test.mockk.common)
+            implementation(libs.ktor.client.mock)
+            implementation(libs.ktor.client.cio)
         }
 
         androidMain.dependencies {
             implementation(libs.androidx.lifecycle.viewmodel.ktx)
             implementation(libs.ktor.client.android)
+
+            implementation(libs.ktor.client.okhttp)
         }
 
         val androidUnitTest by getting {
