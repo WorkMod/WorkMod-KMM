@@ -1,6 +1,9 @@
+import org.jetbrains.compose.ExperimentalComposeLibrary
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)
+    alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.composeCompiler)
 }
 
@@ -9,6 +12,7 @@ android {
     compileSdk = 34
     defaultConfig {
         applicationId = "app.workmod.workmod_kmm.android"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
@@ -22,7 +26,10 @@ android {
     }
     packaging {
         resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes.addAll(
+            listOf("META-INF/LICENSE.md",
+                "META-INF/LICENSE-notice.md",
+                "/META-INF/{AL2.0,LGPL2.1}"))
         }
     }
     buildTypes {
@@ -53,4 +60,13 @@ dependencies {
     implementation(libs.koin.androidx.compose)
 
     debugImplementation(libs.compose.ui.tooling)
+
+    //Instrumentation testing
+    implementation(libs.test.core.ktx)
+    @OptIn(ExperimentalComposeLibrary::class)
+    implementation(compose.uiTest)
+    androidTestImplementation(libs.test.compose.ui.android)
+    androidTestImplementation(libs.test.mockk.android)
+    androidTestImplementation(libs.test.mockk.agent)
+    debugImplementation(libs.test.compose.ui.manifest)
 }

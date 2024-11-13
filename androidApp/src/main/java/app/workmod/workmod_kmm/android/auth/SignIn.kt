@@ -34,8 +34,8 @@ import org.koin.androidx.compose.koinViewModel
                        showSnack: (message: String) -> Unit) {
 
     val context = LocalContext.current
-    var email by remember { mutableStateOf("riyas@gmail.com") }
-    var password by remember { mutableStateOf("123456") }
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
 
     val signInResult by viewModel.signInResult.collectAsState()
 
