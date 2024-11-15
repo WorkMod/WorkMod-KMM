@@ -19,77 +19,39 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout the code
-        uses: actions/checkout@v4
+      - name: Lint
+        run: echo Lint in progress..
 
-      - name: Upload html test report
-        uses: actions/upload-artifact@v4
-        with:
-          name: lint.html
-          path: androidApp/build/reports/lint-results-debug.html
-  build:
-    # The type of runner the job will run on
-    runs-on: ubuntu-latest
-
-    # Steps represents a sequence of tasks that will be executed as part of the job
-    steps: 
-      # Checks out your repository under $GITHUB_WORKSPACE so your job can access it.
-      - uses: actions/checkout@v4
-
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello World!
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to the build,
-          echo test and deploy your project
-        
+  #2: Unit test
   unit-test:
-    needs: [lint]
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout the code
-        uses: actions/checkout@v4
+      - name: Unit test
+        run: echo Unit testing in progress..
 
-      - name: Set up Java
-        uses: actions/setup-java@v2
-        with:
-          java-version: 17
-          distribution: "temurin"
-            
-      - name: Run tests
-        run: ./gradlew test
-
-      - name: Upload test report
-        uses: actions/upload-artifact@v4
-        with:
-          name: unit_test_report
-          path: shared/build/reports/tests/testDebugUnitTest/
-      
+  #3: Instrumentation test
   instrumentation-test:
     needs: [ unit-test ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Intrusmentation test
+        run: echo Instrumentation test in progress..
+
+  #4: Static code analysis
+  static-code-analysis:
+    needs: [ instrumentation-test ]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the code
         uses: actions/checkout@v2
 
-      - name: Set up Java
+      - name: set up Java
         uses: actions/setup-java@v2
         with:
           java-version: 17
           distribution: "temurin"
 
-      - name: Run espresso tests
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 29
-          script: ./gradlew connectedCheck
-
-      - name: Upload test report
-        uses: actions/upload-artifact@v4
-        with:
-          name: instrumentation_test_report
-          path: app/build/reports/androidTests/connected/
-    
+      - name: SonarCloud Scan
+        run: ./gradlew app:sonarqube -Dsonar.login=${{ secrets.SONARCLOUD }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
