@@ -52,6 +52,6 @@ jobs:
           distribution: "temurin"
 
       - name: SonarCloud Scan
-        run: ./gradlew app:sonarqube -Dsonar.login=${{ secrets.SONARCLOUD }}
+        run: ./gradlew androidApp:sonarqube -Dsonar.login=${{ secrets.SONARCLOUD }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

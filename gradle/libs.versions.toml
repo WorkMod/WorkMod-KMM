@@ -23,6 +23,8 @@ ksp = "2.0.20-1.0.24"
 coreKtx = "1.6.1"
 composeTest = "1.7.5"
 
+sonarcloud = "3.3"
+
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 test-mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
@@ -79,3 +81,4 @@ composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "k
 skie = { id = "co.touchlab.skie", version = "0.9.3" }
 googleKsp = { id = "com.google.devtools.ksp", version.ref = "ksp"}
 kotlinCocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
+sonarcloud = { id = "org.sonarqube", version.ref = "sonarcloud"}
