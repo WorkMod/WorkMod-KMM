@@ -8,15 +8,16 @@
         android:supportsRtl="true"
         android:usesCleartextTraffic="false"
         android:name=".WorkModApp"
+        android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name="com.tamesys.workmode.android.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.keepqueue.workmode.auth.view.AuthActivity" />
+        <activity android:name="com.tamesys.workmode.android.auth.AuthActivity" />
     </application>
 </manifest> 

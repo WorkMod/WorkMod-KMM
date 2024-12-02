@@ -48,7 +48,7 @@ kotlin {
 
         androidMain.dependencies {
             implementation(libs.androidx.lifecycle.viewmodel.ktx)
-            implementation(libs.ktor.client.android)
+            //implementation(libs.ktor.client.android)
 
             implementation(libs.ktor.client.okhttp)
         }
@@ -69,7 +69,7 @@ kotlin {
 }
 
 android {
-    namespace = "app.workmod.workmod_kmm"
+    namespace = "com.tamesys.workmode"
     compileSdk = 34
     defaultConfig {
         minSdk = 24

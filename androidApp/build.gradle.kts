@@ -9,10 +9,10 @@ plugins {
 }
 
 android {
-    namespace = "app.workmod.workmod_kmm.android"
+    namespace = "com.tamesys.workmode.android"
     compileSdk = 34
     defaultConfig {
-        applicationId = "app.workmod.workmod_kmm.android"
+        applicationId = "com.tamesys.workmode.android"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         minSdk = 24
         targetSdk = 34
