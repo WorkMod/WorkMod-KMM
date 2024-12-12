@@ -9,7 +9,7 @@
 import SwiftUI
 import shared
 
-extension AddProfilesView {
+extension AddProfileView {
     
     @MainActor
     class AddProfileViewModelWrapper: ObservableObject {
@@ -22,8 +22,10 @@ extension AddProfilesView {
         init() {
             self.profileViewModel = ProfileInjector().profileViewModel
             self.onProfileAdded = {}
-            self.addProfileResult = profileViewModel.addProfileResult.value
-            self.updateProfileResult = profileViewModel.updateProfileResult.value
+            self.onProfileUpdated = {}
+            self.addProfileResult = BoolState(success: false, loading: false, error: "")
+            self.updateProfileResult = BoolState(success: false, loading: false, error: "")
+            self.getProfileResult = GetProfileResult(success: false, loading: false, profile: nil, error: "")
         }
         
         @Published var addProfileResult: BoolState
@@ -37,7 +39,7 @@ extension AddProfilesView {
                     print("new addProfile state! : \(newState.success)")
                     self.addProfileResult = newState
                     if (newState.success) {
-                        self.profileViewModel.addProfileReset()
+                        //self.profileViewModel.addProfileReset()
                         self.onProfileAdded()
                     }
                 }
@@ -45,7 +47,7 @@ extension AddProfilesView {
                     print("new updateProfile state! : \(newState.success)")
                     self.updateProfileResult = newState
                     if (newState.success) {
-                        self.profileViewModel.updateProfileReset()
+                        //self.profileViewModel.updateProfileReset()
                         self.onProfileUpdated()
                     }
                 }
@@ -66,9 +68,9 @@ extension AddProfilesView {
     }
 }
 
-struct AddProfilesView: View {
+struct AddProfileView: View {
     
-    static let tag = "AddProfileView"
+    static let tag: String = "AddProfileView"
     
     @ObservedObject private(set) var viewModel: AddProfileViewModelWrapper
     

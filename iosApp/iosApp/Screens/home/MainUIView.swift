@@ -22,12 +22,16 @@ struct MainUIView: View {
     var body: some View {
         TabView(selection: $selectedIndex) {
             NavigationStack(path: $navPathProfiles) {
-                        AllProfilesView(viewModel: .init(), onItemClick: {})
+                        AllProfilesView(viewModel: .init(),
+                                        onItemClick: { id in
+                                            print(id)
+                                        }
+                        )
                             .navigationTitle("All Profiles")
                             .toolbar {
                                 ToolbarItem {
                                     Button {
-                                        navPathProfiles.append(AddProfilesView.tag)
+                                        navPathProfiles.append(AddProfileView.tag)
                                     } label: {
                                         Label("New", systemImage: "info.circle").labelStyle(.titleAndIcon)
                                     }
@@ -37,8 +41,8 @@ struct MainUIView: View {
                                 case ProfileDetailView.tag:
                                     ProfileDetailView()
                                 case AddProfileView.tag:
-                                    AddProfilesView(viewModel: .init(), 
-                                        profileId: <#T##String?#>,
+                                    AddProfileView(viewModel: .init(),
+                                                   profileId: nil,
                                         onProfileAdded: {
                                         
                                     },

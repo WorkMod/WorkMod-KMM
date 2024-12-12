@@ -20,7 +20,7 @@ extension SignUpView {
         
         init() {
             authViewModel = AuthInjector().authViewModel
-            signUpState = authViewModel.signUpResult.value
+            signUpState = BoolState(success: false, loading: false, error: "")
         }
         
         @Published var signUpState: BoolState
@@ -31,7 +31,7 @@ extension SignUpView {
                     print("new signUpResult state!: \(newState.success)")
                     self.signUpState = newState
                     if (newState.success) {
-                        self.authViewModel.signUpReset()
+                        //self.authViewModel.signUpReset()
                         self.onSignUp()
                     }
                 }

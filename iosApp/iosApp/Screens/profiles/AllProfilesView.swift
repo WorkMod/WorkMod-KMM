@@ -20,7 +20,7 @@ extension AllProfilesView {
         init() {
             self.profileViewModel = ProfileInjector().profileViewModel
             self.onItemClick = {_ in}
-            self.getAllProfilesResult = profileViewModel.getAllProfilesResult.value
+            self.getAllProfilesResult = GetAllProfilesResult(success: false, loading: false, profiles: [], error: "")
         }
         
         @Published var getAllProfilesResult: GetAllProfilesResult

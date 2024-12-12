@@ -28,7 +28,7 @@ extension SignInView {
         
         init() {
             authViewModel = AuthInjector().authViewModel
-            signInState = authViewModel.signInResult.value
+            signInState = BoolState(success: false, loading: false, error: "")
         }
         
         @Published var signInState: BoolState
@@ -39,7 +39,7 @@ extension SignInView {
                     print("new signInResult state! : \(newState.success)")
                     self.signInState = newState
                     if (newState.success) {
-                        self.authViewModel.signInReset()
+                        //self.authViewModel.signInReset()
                         self.onSignIn()
                     }
                 }
