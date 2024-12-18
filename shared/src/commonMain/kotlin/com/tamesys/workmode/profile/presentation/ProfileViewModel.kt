@@ -15,7 +15,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class ProfileViewModel(
@@ -27,7 +29,7 @@ class ProfileViewModel(
     private val downloadProfileUseCase: DownloadProfileUseCase,
 ) : BaseViewModel() {
 
-    private val _getProfileResult = MutableSharedFlow<GetProfileResult>()
+    private val _getProfileResult = MutableSharedFlow<GetProfileResult>(1)
     val getProfileResult = _getProfileResult.asSharedFlow()
     private var getProfileJob: Job? = null
 
@@ -50,6 +52,12 @@ class ProfileViewModel(
     private val _downloadProfileResult = MutableSharedFlow<DownloadProfileResult>()
     val downloadProfileResult = _downloadProfileResult.asSharedFlow()
     private var downloadProfileJob: Job? = null
+
+    private val _newEmploymentsResult = MutableStateFlow<List<Employment>>(listOf())
+    val newEmploymentsResult = _newEmploymentsResult.asStateFlow()
+
+    private val _newEducationResult = MutableStateFlow<List<Education>>(listOf())
+    val newEducationResult = _newEducationResult.asStateFlow()
 
     fun getProfile(profileId: String) {
         getProfileJob?.cancel()
@@ -210,6 +218,16 @@ class ProfileViewModel(
                 _downloadProfileResult.emit(DownloadProfileResult(error = e.message ?: ""))
             }
         }
+    }
+
+    fun addEmployment(employment: Employment) {
+        val newList = newEmploymentsResult.replayCache[0] + listOf(employment)
+        scope.launch { _newEmploymentsResult.emit(newList) }
+    }
+
+    fun addEducation(education: Education) {
+        val newList = newEducationResult.replayCache[0] + listOf(education)
+        scope.launch { _newEducationResult.emit(newList) }
     }
 
 }
