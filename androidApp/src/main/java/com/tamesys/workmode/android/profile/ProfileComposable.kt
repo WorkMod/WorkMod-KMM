@@ -28,21 +28,32 @@ import com.tamesys.workmode.profile.domain.model.Employment
 
 @Composable
 internal fun EmploymentDetails(employments: List<Employment>, onDelete: ((index: Int) -> Unit)? = null) {
-    Card(modifier = Modifier.padding(12.dp), colors = CardDefaults.cardColors(
-        containerColor = MaterialTheme.colorScheme.surfaceContainer,
-    )) {
-        Column(modifier = Modifier
-            .padding(16.dp)
-            .fillMaxWidth()) {
-            Text(text = "Employments",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = Color.Black,
-                textDecoration = TextDecoration.Underline)
-            for (i in employments.indices) {
-                EmploymentItem(employments[i], i, onDelete)
-                if (i < employments.size - 1) {
-                    Divider(modifier = Modifier.height(6.dp).padding(vertical = 2.dp))
+    Column(modifier = Modifier
+        .padding(16.dp)
+        .fillMaxWidth()) {
+        Text(
+            modifier = Modifier.padding(6.dp),
+            text = "Employments",
+            fontSize = 18.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = Color.Black,
+            //textDecoration = TextDecoration.Underline
+        )
+        Card(colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+        )) {
+            Column(modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()) {
+                if (employments.isEmpty()) {
+                    Text("No Employments added!")
+                } else {
+                    for (i in employments.indices) {
+                        EmploymentItem(employments[i], i, onDelete)
+                        if (i < employments.size - 1) {
+                            Divider(modifier = Modifier.height(6.dp).padding(vertical = 2.dp))
+                        }
+                    }
                 }
             }
         }
@@ -90,21 +101,31 @@ private fun EmploymentItem(employment: Employment, index: Int, onDelete: ((delet
 
 @Composable
 internal fun EducationDetails(educations: List<Education>, onDelete: ((index: Int) -> Unit)? = null) {
-    Card(modifier = Modifier.padding(12.dp), colors = CardDefaults.cardColors(
-        containerColor = MaterialTheme.colorScheme.surfaceContainer,
-    )) {
-        Column(modifier = Modifier
-            .padding(16.dp)
-            .fillMaxWidth()) {
-            Text(text = "Educations",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = Color.Black,
-                textDecoration = TextDecoration.Underline)
-            for (i in educations.indices) {
-                EducationItem(education = educations[i], i, onDelete)
-                if (i < educations.size - 1) {
-                    Divider(modifier = Modifier.height(6.dp).padding(vertical = 2.dp))
+    Column(modifier = Modifier
+        .padding(16.dp)
+        .fillMaxWidth()) {
+        Text(modifier = Modifier.padding(6.dp),
+            text = "Educations",
+            fontSize = 18.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = Color.Black,
+            //textDecoration = TextDecoration.Underline
+        )
+        Card(colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+        )) {
+            Column(modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()) {
+                if (educations.isEmpty()) {
+                    Text("No Educations added!")
+                } else {
+                    for (i in educations.indices) {
+                        EducationItem(education = educations[i], i, onDelete)
+                        if (i < educations.size - 1) {
+                            Divider(modifier = Modifier.height(6.dp).padding(vertical = 2.dp))
+                        }
+                    }
                 }
             }
         }

@@ -48,6 +48,7 @@ fun AllProfiles(navController: NavHostController,
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
+                    viewModel.clearExperiences()
                     navController.navigate(Destination.AddProfile.route.replace(
                         oldValue = "{id}",
                         newValue = "id"

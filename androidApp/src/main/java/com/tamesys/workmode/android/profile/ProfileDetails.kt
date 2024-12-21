@@ -88,6 +88,7 @@ fun ProfileDetails(navController: NavHostController,
                 },
                 actions = @Composable {
                     IconButton(onClick = {
+                        viewModel.clearExperiences()
                         navController.navigate(Destination.AddProfile.route.replace(
                             oldValue = "{id}",
                             newValue = profileId
@@ -125,7 +126,7 @@ fun ProfileDetails(navController: NavHostController,
                 titleString.value = profileResult.profile?.title ?: ""
                 profileResult.profile?.let {profile ->
                     Card(modifier = Modifier
-                        .padding(16.dp)
+                        .padding(0.dp)
                         .fillMaxWidth()) {
                         Column(modifier = Modifier
                             .fillMaxWidth()
@@ -141,7 +142,8 @@ fun ProfileDetails(navController: NavHostController,
                             }
                             Spacer(modifier = Modifier.height(4.dp))
                             ProfileFooter(profile)
-                            Button(onClick = {
+                            Button(modifier = Modifier.padding(8.dp, 8.dp, 8.dp, 16.dp)
+                                .align(Alignment.CenterHorizontally), onClick = {
                                 viewModel.downloadProfile(profileId, context.filesDir.path)
                             }) {
                                 Text("Download CV")

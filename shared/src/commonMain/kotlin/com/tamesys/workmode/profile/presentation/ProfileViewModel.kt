@@ -225,9 +225,23 @@ class ProfileViewModel(
         scope.launch { _newEmploymentsResult.emit(newList) }
     }
 
+    private fun clearEmployments() {
+        _newEmploymentsResult.value = listOf()
+    }
+
     fun addEducation(education: Education) {
         val newList = newEducationResult.replayCache[0] + listOf(education)
         scope.launch { _newEducationResult.emit(newList) }
     }
+
+    private fun clearEducations() {
+        _newEducationResult.value = listOf()
+    }
+
+    fun clearExperiences() {
+        clearEmployments()
+        clearEducations()
+    }
+
 
 }

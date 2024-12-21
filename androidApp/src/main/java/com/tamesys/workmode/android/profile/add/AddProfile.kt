@@ -62,13 +62,11 @@ fun AddProfile(navController: NavHostController,
 
     var educationList by remember { mutableStateOf(listOf<Education>()) }
 
-    var counter by remember { mutableStateOf(0) }
-
     val newEmployments by viewModel.newEmploymentsResult.collectAsState()
     val newEducations by viewModel.newEducationResult.collectAsState()
 
     if (editProfileId != null) {
-        LaunchedEffect(Unit) {
+        LaunchedEffect(editProfileId) {
             viewModel.getProfile(editProfileId)
         }
         val profileResult by viewModel.getProfileResult.collectAsState(GetProfileResult())
@@ -121,22 +119,14 @@ fun AddProfile(navController: NavHostController,
             }
 
             Column(modifier = Modifier
-                .padding(10.dp)
+                .padding(16.dp, 0.dp)
                 .verticalScroll(rememberScrollState())
                 .align(Alignment.Center)) {
-                Card(modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 10.dp)) {
-                    TextField(value = title,
-                        label = { Text(text = "Profile title") },
-                        onValueChange = { title = it})
-                }
-
-                Divider(modifier = Modifier
-                    .width(IntrinsicSize.Min)
-                    .height(10.dp))
                 Card(modifier = Modifier.fillMaxWidth()) {
                     Column {
+                        TextField(value = title,
+                            label = { Text(text = "Profile title") },
+                            onValueChange = { title = it})
                         TextField(value = name,
                             label = { Text(text = "Name") },
                             onValueChange = { name = it})
@@ -162,13 +152,11 @@ fun AddProfile(navController: NavHostController,
                             newList.removeAt(deleteIndex)
                             employmentList = newList
                         }
-
-                        Button(modifier = Modifier, onClick = {
+                        Button(modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 8.dp), onClick = {
                             navController.navigate(Destination.AddEmployment.route)
                         }) {
                             Text("Add Employment")
                         }
-
                         Divider(modifier = Modifier.height(6.dp).padding(vertical = 2.dp))
 
                         EducationDetails(educations = educationList) {deleteIndex ->
@@ -176,12 +164,11 @@ fun AddProfile(navController: NavHostController,
                             newList.removeAt(deleteIndex)
                             educationList = newList
                         }
-                        Button(modifier = Modifier, onClick = {
+                        Button(modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 8.dp), onClick = {
                             navController.navigate(Destination.AddEducation.route)
                         }) {
                             Text("Add Education")
                         }
-                        Divider(modifier = Modifier.height(6.dp).padding(vertical = 2.dp))
                     }
                 }
 
@@ -207,7 +194,7 @@ fun AddProfile(navController: NavHostController,
                 }
 
                 Button(modifier = Modifier
-                    .padding(top = 10.dp)
+                    .padding(12.dp)
                     .align(Alignment.CenterHorizontally),
                     onClick = {
                         showSnack.invoke("Hellooo!")
