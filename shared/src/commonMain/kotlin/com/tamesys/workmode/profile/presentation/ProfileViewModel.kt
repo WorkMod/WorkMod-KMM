@@ -11,6 +11,7 @@ import com.tamesys.workmode.profile.domain.GetProfileUseCase
 import com.tamesys.workmode.profile.domain.UpdateProfileUseCase
 import com.tamesys.workmode.profile.domain.model.Education
 import com.tamesys.workmode.profile.domain.model.Employment
+import com.tamesys.workmode.profile.domain.model.SkillSet
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.Job
@@ -80,6 +81,8 @@ class ProfileViewModel(
         }
     }
 
+    fun getCachedProfile() = getProfileResult.replayCache[0].profile
+
     fun getAllProfiles() {
         getAllProfilesJob?.cancel()
         getAllProfilesJob = scope.launch(Dispatchers.IO) {
@@ -108,6 +111,8 @@ class ProfileViewModel(
         email: String,
         employments: List<Employment>,
         educations: List<Education>,
+        skillSets: List<SkillSet>,
+        interests: List<String>,
         phone: String,
         address: String,
         nationality: String,
@@ -125,6 +130,8 @@ class ProfileViewModel(
                     email,
                     employments,
                     educations,
+                    skillSets,
+                    interests,
                     phone,
                     address,
                     nationality,
@@ -151,6 +158,8 @@ class ProfileViewModel(
         email: String,
         employments: List<Employment>,
         educations: List<Education>,
+        skillSets: List<SkillSet>,
+        interests: List<String>,
         phone: String,
         address: String,
         nationality: String,
@@ -167,6 +176,8 @@ class ProfileViewModel(
                     email,
                     employments,
                     educations,
+                    skillSets,
+                    interests,
                     phone,
                     address,
                     nationality,

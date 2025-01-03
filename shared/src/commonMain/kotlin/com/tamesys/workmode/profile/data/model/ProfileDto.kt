@@ -1,6 +1,7 @@
 package com.tamesys.workmode.profile.data.model
 
 import com.tamesys.workmode.profile.domain.model.Profile
+import com.tamesys.workmode.profile.domain.model.SkillSet
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -13,9 +14,11 @@ data class ProfileDto(
     @SerialName("designation") val designation: String,
     @SerialName("email") val email: String,
 
-    val educations: List<EducationDto> = listOf(),
-    val employments: List<EmploymentDto> = listOf(),
+    @SerialName("educations") val educations: List<EducationDto> = listOf(),
+    @SerialName("employments") val employments: List<EmploymentDto> = listOf(),
+    @SerialName("skillSets") val skillSets: List<SkillSetDto> = listOf(),
 
+    @SerialName("interests") val interests: String? = "",
     @SerialName("phone") val phone: String,
     @SerialName("address") val address: String,
     @SerialName("nationality") val nationality: String,
@@ -30,6 +33,10 @@ data class ProfileDto(
         email = this.email,
         educations = this.educations.map { it.toEducation() },
         employments = this.employments.map { it.toEmployment() },
+        skillSets = this.skillSets.map { it.toSkillSet() },
+        interests = if (this.interests?.isNotEmpty() == true) {
+            this.interests.split(",").map { it.trim() }
+        } else listOf(),
         phone = this.phone,
         address = this.address,
         nationality = this.nationality,

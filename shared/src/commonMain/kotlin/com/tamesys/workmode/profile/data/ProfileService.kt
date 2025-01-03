@@ -6,6 +6,9 @@ import com.tamesys.workmode.common.Constants.DOWNLOAD_BUFFER_SIZE
 import com.tamesys.workmode.common.FileWriter
 import com.tamesys.workmode.common.Prefs
 import com.tamesys.workmode.profile.data.model.AddProfileModel
+import com.tamesys.workmode.profile.data.model.EducationDto
+import com.tamesys.workmode.profile.data.model.EmploymentDto
+import com.tamesys.workmode.profile.data.model.SkillSetDto
 import com.tamesys.workmode.profile.data.response.AddProfileResponse
 import com.tamesys.workmode.profile.data.response.DeleteProfileResponse
 import com.tamesys.workmode.profile.data.response.DownloadProfileResponse
@@ -14,6 +17,7 @@ import com.tamesys.workmode.profile.data.response.GetProfileResponse
 import com.tamesys.workmode.profile.domain.model.Education
 import com.tamesys.workmode.profile.domain.model.Employment
 import com.tamesys.workmode.profile.domain.model.Profile
+import com.tamesys.workmode.profile.domain.model.SkillSet
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.delete
@@ -90,6 +94,8 @@ class ProfileService constructor(
         email: String,
         employments: List<Employment>,
         educations: List<Education>,
+        skillSets: List<SkillSet>,
+        interests: List<String>,
         phone: String,
         address: String,
         nationality: String,
@@ -107,8 +113,10 @@ class ProfileService constructor(
                 name = name,
                 designation = designation,
                 email = email,
-                employments = employments,
-                educations = educations,
+                employments = employments.map { EmploymentDto.fromEmployment(it) },
+                educations = educations.map { EducationDto.fromEducation(it) },
+                skillSets = skillSets.map { SkillSetDto.fromSkillSet(it) },
+                interests = interests.joinToString(),
                 phone = phone,
                 address = address,
                 nationality = nationality,
@@ -130,6 +138,8 @@ class ProfileService constructor(
         email: String,
         employments: List<Employment>,
         educations: List<Education>,
+        skillSets: List<SkillSet>,
+        interests: List<String>,
         phone: String,
         address: String,
         nationality: String,
@@ -149,8 +159,10 @@ class ProfileService constructor(
                     name = name,
                     designation = designation,
                     email = email,
-                    employments = employments,
-                    educations = educations,
+                    employments = employments.map { EmploymentDto.fromEmployment(it) },
+                    educations = educations.map { EducationDto.fromEducation(it) },
+                    skillSets = skillSets.map { SkillSetDto.fromSkillSet(it) },
+                    interests = interests.joinToString(),
                     phone = phone,
                     address = address,
                     nationality = nationality,
@@ -204,6 +216,7 @@ class ProfileService constructor(
             parameter("profileId", profileId)
         }
 
+        //IMPROVE CV TEMPLATE AND CONTINUE TO play store upload
         val downloadResponse: DownloadProfileResponse = response.body()
         //https://github.com/ktorio/ktor-documentation/blob/2.3.3/codeSnippets/snippets/client-download-streaming/src/main/kotlin/com/example/Application.kt
 

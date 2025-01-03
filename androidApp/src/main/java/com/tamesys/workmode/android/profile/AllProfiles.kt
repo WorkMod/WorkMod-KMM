@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.tamesys.workmode.android.home.Screen
 import com.tamesys.workmode.profile.presentation.GetAllProfilesResult
 import com.tamesys.workmode.profile.presentation.ProfileViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -49,7 +50,7 @@ fun AllProfiles(navController: NavHostController,
             FloatingActionButton(
                 onClick = {
                     viewModel.clearExperiences()
-                    navController.navigate(Destination.AddProfile.route.replace(
+                    navController.navigate(Screen.ProfileAdd.route.replace(
                         oldValue = "{id}",
                         newValue = "id"
                     ))

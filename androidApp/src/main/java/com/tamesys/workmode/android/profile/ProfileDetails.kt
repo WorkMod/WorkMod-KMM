@@ -36,12 +36,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.tamesys.workmode.android.common.ui.DialogOkCancel
+import com.tamesys.workmode.android.home.Screen
 import com.tamesys.workmode.common.BoolState
 import com.tamesys.workmode.profile.domain.model.Profile
 import com.tamesys.workmode.profile.presentation.DownloadProfileResult
 import com.tamesys.workmode.profile.presentation.GetProfileResult
 import com.tamesys.workmode.profile.presentation.ProfileViewModel
 import org.koin.androidx.compose.koinViewModel
+import kotlin.text.Typography.section
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -89,7 +91,7 @@ fun ProfileDetails(navController: NavHostController,
                 actions = @Composable {
                     IconButton(onClick = {
                         viewModel.clearExperiences()
-                        navController.navigate(Destination.AddProfile.route.replace(
+                        navController.navigate(Screen.ProfileAdd.route.replace(
                             oldValue = "{id}",
                             newValue = profileId
                         ))
@@ -141,6 +143,8 @@ fun ProfileDetails(navController: NavHostController,
                                 EducationDetails(profile.educations)
                             }
                             Spacer(modifier = Modifier.height(4.dp))
+
+                            //Add Skills and Interests section
                             ProfileFooter(profile)
                             Button(modifier = Modifier.padding(8.dp, 8.dp, 8.dp, 16.dp)
                                 .align(Alignment.CenterHorizontally), onClick = {

@@ -14,7 +14,9 @@ data class Profile(
 
     val educations: List<Education> = listOf(),
     val employments: List<Employment> = listOf(),
+    val skillSets: List<SkillSet> = listOf(),
 
+    val interests: List<String> = listOf(),
     @SerialName("phone") val phone: String,
     @SerialName("address") val address: String,
     @SerialName("nationality") val nationality: String,

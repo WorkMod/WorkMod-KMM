@@ -11,6 +11,16 @@ data class EmploymentDto(
     val from: String,
     val to: String
 ) {
+    companion object {
+        fun fromEmployment(employment: Employment) = EmploymentDto(
+            id = employment.id,
+            title = employment.title,
+            company = employment.company,
+            from = employment.from,
+            to = employment.to
+        )
+    }
+
     fun toEmployment() = Employment(
         id = this.id,
         title = this.title,
@@ -18,4 +28,5 @@ data class EmploymentDto(
         from = this.from,
         to = this.to
     )
+
 }

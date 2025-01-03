@@ -11,6 +11,17 @@ data class EducationDto(
     val from: String,
     val to: String
 ) {
+
+    companion object {
+        fun fromEducation(education: Education) = EducationDto(
+            id = education.id,
+            title = education.title,
+            school = education.school,
+            from = education.from,
+            to = education.to
+        )
+    }
+
     fun toEducation() = Education(
         id = this.id,
         title = this.title,
