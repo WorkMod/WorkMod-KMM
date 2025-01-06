@@ -37,6 +37,7 @@ data class ProfileDto(
         interests = if (this.interests?.isNotEmpty() == true) {
             this.interests.split(",").map { it.trim() }
         } else listOf(),
+        interestString =  this.interests,
         phone = this.phone,
         address = this.address,
         nationality = this.nationality,

@@ -9,14 +9,11 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.FlowRowOverflow
 import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeight
-import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -40,9 +37,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.min
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.tamesys.workmode.android.home.Screen
 import com.tamesys.workmode.android.profile.EducationDetails
@@ -57,10 +55,11 @@ import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun AddProfile(navController: NavHostController,
-               showSnack: (message: String) -> Unit,
-               editProfileId: String? = null,
-               viewModel: ProfileViewModel = koinViewModel()
+fun AddProfile(
+    navController: NavHostController,
+    showSnack: (message: String) -> Unit,
+    editProfileId: String? = null,
+    viewModel: ProfileViewModel = koinViewModel()
 ) {
 
     var title by remember { mutableStateOf("iOS Developer") }
@@ -135,36 +134,42 @@ fun AddProfile(navController: NavHostController,
                 )
             }
 
-            Column(modifier = Modifier
-                .padding(16.dp, 0.dp)
-                .verticalScroll(rememberScrollState())
-                .align(Alignment.Center)) {
+            Column(
+                modifier = Modifier
+                    .padding(16.dp, 0.dp)
+                    .verticalScroll(rememberScrollState())
+                    .align(Alignment.Center)
+            ) {
                 Card(modifier = Modifier.fillMaxWidth()) {
                     Column {
                         TextField(value = title,
                             label = { Text(text = "Profile title") },
-                            onValueChange = { title = it})
+                            onValueChange = { title = it })
                         TextField(value = name,
                             label = { Text(text = "Name") },
-                            onValueChange = { name = it})
+                            onValueChange = { name = it })
                         TextField(value = designation,
                             label = { Text(text = "Designation") },
-                            onValueChange = { designation = it})
+                            onValueChange = { designation = it })
                         TextField(value = email,
                             label = { Text(text = "Email") },
-                            onValueChange = { email = it})
+                            onValueChange = { email = it })
                     }
                 }
 
-                Divider(modifier = Modifier
-                    .width(IntrinsicSize.Min)
-                    .height(10.dp))
+                Divider(
+                    modifier = Modifier
+                        .width(IntrinsicSize.Min)
+                        .height(10.dp)
+                )
 
                 Card(modifier = Modifier.fillMaxWidth()) {
-                    Column(modifier = Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
 
-                        EmploymentDetails(employments = employmentList) {deleteIndex ->
+                        EmploymentDetails(employments = employmentList) { deleteIndex ->
                             val newList = employmentList.toMutableList()
                             newList.removeAt(deleteIndex)
                             employmentList = newList
@@ -174,9 +179,11 @@ fun AddProfile(navController: NavHostController,
                         }) {
                             Text("Add Employment")
                         }
-                        Divider(modifier = Modifier.height(6.dp).padding(vertical = 2.dp))
+                        Divider(modifier = Modifier
+                            .height(6.dp)
+                            .padding(vertical = 2.dp))
 
-                        EducationDetails(educations = educationList) {deleteIndex ->
+                        EducationDetails(educations = educationList) { deleteIndex ->
                             val newList = educationList.toMutableList()
                             newList.removeAt(deleteIndex)
                             educationList = newList
@@ -189,52 +196,25 @@ fun AddProfile(navController: NavHostController,
                     }
                 }
 
-                FlowRow(
-                    modifier = Modifier
-                        .safeDrawingPadding()
-                        .heightIn(min = 0.dp, max = 200.dp)
-                        .fillMaxWidth(1f)
-                        .padding(0.dp)
-                        .wrapContentHeight(align = Alignment.Top)
-                        .verticalScroll(rememberScrollState()),
-                    verticalArrangement = Arrangement.spacedBy(4.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    maxLines = 4,
-                    overflow = FlowRowOverflow.expandIndicator { Text("More",
-                        color = Color.Blue,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.align(Alignment.CenterVertically)
-                            .padding(5.dp, 0.dp)
-                            .clickable {
-                            navController.navigate(Screen.ProfileAddInterests.route)
-                        }) }
-                ) {
-                    for (item in interestList) {
-                        ChipItem(item)
-                    }
-                }
-                Button(modifier = Modifier.padding(8.dp, 8.dp)
-                    .align(Alignment.CenterHorizontally), onClick = {
-                    navController.navigate(Screen.ProfileAddInterests.route)
-                }) {
-                    Text("Add Interests")
-                }
+                ProfileInterests(navController, interestList)
 
-                Divider(modifier = Modifier
-                    .width(IntrinsicSize.Min)
-                    .height(10.dp))
+                Divider(
+                    modifier = Modifier
+                        .width(IntrinsicSize.Min)
+                        .height(10.dp)
+                )
 
                 Card(modifier = Modifier.fillMaxWidth()) {
                     Column {
                         TextField(value = phone,
                             label = { Text(text = "Phone") },
-                            onValueChange = { phone = it})
+                            onValueChange = { phone = it })
                         TextField(value = nationality,
                             label = { Text(text = "Nationality") },
-                            onValueChange = { nationality = it})
+                            onValueChange = { nationality = it })
                         TextField(value = address,
                             label = { Text(text = "Address") },
-                            onValueChange = { address = it})
+                            onValueChange = { address = it })
                         TextField(value = description,
                             label = { Text(text = "Description") },
                             onValueChange = { description = it })
@@ -299,6 +279,59 @@ fun AddProfile(navController: NavHostController,
                     Text(if (editProfileId.isNullOrEmpty()) "Add Profile" else "Update Profile")
                 }
             }
+        }
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun ProfileInterests(navController: NavHostController ,interestList: List<String>) {
+    Column(modifier = Modifier.padding(16.dp, 16.dp)
+        .fillMaxWidth()
+
+        ) {
+        Text(text = "Interests",
+            fontSize = 18.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = Color.Black,
+        )
+        if (interestList.isNotEmpty()) {
+            FlowRow(
+                modifier = Modifier
+                    .safeDrawingPadding()
+                    .heightIn(min = 0.dp, max = 300.dp)
+                    .fillMaxWidth(1f)
+                    //.padding(8.dp)
+                    .wrapContentHeight(align = Alignment.Top)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                maxLines = 4,
+                overflow = FlowRowOverflow.expandIndicator {
+                    Text("More",
+                        color = Color.Blue,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically)
+                            .padding(5.dp, 0.dp)
+                            .clickable {
+                                navController.navigate(Screen.ProfileAddInterests.route)
+                            })
+                }
+            ) {
+                for (item in interestList) {
+                    ChipItem(item)
+                }
+            }
+        } else {
+            Text("No Interests added!")
+        }
+        Button(modifier = Modifier
+            .padding(top = 8.dp)
+            .align(Alignment.CenterHorizontally), onClick = {
+            navController.navigate(Screen.ProfileAddInterests.route)
+        }) {
+            Text("Add Interests")
         }
     }
 }

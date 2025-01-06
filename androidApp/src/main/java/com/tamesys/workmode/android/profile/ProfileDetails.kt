@@ -32,8 +32,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.tamesys.workmode.android.common.ui.DialogOkCancel
 import com.tamesys.workmode.android.home.Screen
@@ -144,6 +147,11 @@ fun ProfileDetails(navController: NavHostController,
                             }
                             Spacer(modifier = Modifier.height(4.dp))
 
+                            profile.interestString?.let { interests ->
+                                if (interests.isNotEmpty()) {
+                                    ProfileInterests(interests)
+                                }
+                            }
                             //Add Skills and Interests section
                             ProfileFooter(profile)
                             Button(modifier = Modifier.padding(8.dp, 8.dp, 8.dp, 16.dp)
@@ -201,8 +209,29 @@ private fun ProfileHeader(profile: Profile) {
         horizontalAlignment = Alignment.CenterHorizontally) {
         Text(text = profile.name)
         Text(text = profile.designation)
-        Text(text = profile.email)
+        Text(text = profile.description)
     }
+}
+
+@Composable
+private fun ProfileInterests(interests: String) {
+    Column(modifier = Modifier.padding(16.dp, 0.dp)) {
+        Text(
+            modifier = Modifier.padding(6.dp),
+            text = "Interests",
+            fontSize = 18.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = Color.Black,
+        )
+        Text(
+            modifier = Modifier.padding(6.dp),
+            text = interests,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = Color.Black,
+        )
+    }
+
 }
 
 @Composable
@@ -212,8 +241,9 @@ private fun ProfileFooter(profile: Profile) {
         containerColor = Color.Green,)*/
     ) {
         Column(modifier = Modifier
-            .padding(16.dp)
+            .padding(16.dp, 8.dp)
             .fillMaxWidth()) {
+            Text(text = profile.email)
             Text(text = profile.phone)
             Text(text = profile.address)
             Text(text = profile.nationality)
