@@ -11,11 +11,14 @@ import com.tamesys.workmode.profile.domain.GetProfileUseCase
 import com.tamesys.workmode.profile.domain.UpdateProfileUseCase
 import com.tamesys.workmode.profile.domain.model.Education
 import com.tamesys.workmode.profile.domain.model.Employment
+import com.tamesys.workmode.profile.domain.model.SkillSet
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class ProfileViewModel(
@@ -27,7 +30,7 @@ class ProfileViewModel(
     private val downloadProfileUseCase: DownloadProfileUseCase,
 ) : BaseViewModel() {
 
-    private val _getProfileResult = MutableSharedFlow<GetProfileResult>()
+    private val _getProfileResult = MutableSharedFlow<GetProfileResult>(1)
     val getProfileResult = _getProfileResult.asSharedFlow()
     private var getProfileJob: Job? = null
 
@@ -51,6 +54,15 @@ class ProfileViewModel(
     val downloadProfileResult = _downloadProfileResult.asSharedFlow()
     private var downloadProfileJob: Job? = null
 
+    private val _employments = MutableStateFlow<List<Employment>>(listOf())
+    val employments = _employments.asStateFlow()
+
+    private val _educations = MutableStateFlow<List<Education>>(listOf())
+    val educations = _educations.asStateFlow()
+
+    private val _interests = MutableStateFlow<List<String>>(listOf())
+    val interests = _interests.asStateFlow()
+
     fun getProfile(profileId: String) {
         getProfileJob?.cancel()
         getProfileJob = scope.launch(Dispatchers.IO) {
@@ -69,6 +81,18 @@ class ProfileViewModel(
             } catch (e: Exception) {
                 _getProfileResult.emit(GetProfileResult(error = e.message ?: ""))
             }
+        }
+    }
+
+    fun getCachedProfile() = getProfileResult.replayCache[0].profile
+
+    fun loadFromProfile() {
+        if (_employments.value.isEmpty() && _educations.value.isEmpty()) {
+            _employments.value = getCachedProfile()?.employments ?: mutableListOf()
+            _educations.value = getCachedProfile()?.educations ?: mutableListOf()
+        }
+        if (_interests.value.isEmpty()) {
+            _interests.value = getCachedProfile()?.interests ?: mutableListOf()
         }
     }
 
@@ -100,6 +124,8 @@ class ProfileViewModel(
         email: String,
         employments: List<Employment>,
         educations: List<Education>,
+        skillSets: List<SkillSet>,
+        interests: List<String>,
         phone: String,
         address: String,
         nationality: String,
@@ -117,6 +143,8 @@ class ProfileViewModel(
                     email,
                     employments,
                     educations,
+                    skillSets,
+                    interests,
                     phone,
                     address,
                     nationality,
@@ -143,6 +171,8 @@ class ProfileViewModel(
         email: String,
         employments: List<Employment>,
         educations: List<Education>,
+        skillSets: List<SkillSet>,
+        interests: List<String>,
         phone: String,
         address: String,
         nationality: String,
@@ -159,6 +189,8 @@ class ProfileViewModel(
                     email,
                     employments,
                     educations,
+                    skillSets,
+                    interests,
                     phone,
                     address,
                     nationality,
@@ -210,6 +242,38 @@ class ProfileViewModel(
                 _downloadProfileResult.emit(DownloadProfileResult(error = e.message ?: ""))
             }
         }
+    }
+
+    fun addEmployment(employment: Employment) {
+        val newList = employments.replayCache[0] + listOf(employment)
+        scope.launch { _employments.emit(newList) }
+    }
+
+    fun removeEmployment(index: Int) {
+        val newList = employments.replayCache[0].toMutableList()
+        newList.removeAt(index)
+        scope.launch { _employments.emit(newList) }
+    }
+
+    fun addNewEducation(education: Education) {
+        val newList = educations.replayCache[0] + listOf(education)
+        scope.launch { _educations.emit(newList) }
+    }
+
+    fun removeEducation(index: Int) {
+        val newList = educations.replayCache[0].toMutableList()
+        newList.removeAt(index)
+        scope.launch { _educations.emit(newList) }
+    }
+
+    fun setInterests(interests: List<String>) {
+        _interests.value = interests
+    }
+
+    fun clearProfile() {
+        _employments.value = listOf()
+        _educations.value = listOf()
+        _interests.value = listOf()
     }
 
 }

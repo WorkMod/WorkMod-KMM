@@ -53,6 +53,7 @@ class AuthViewModel(
 
     fun signIn(email: String, password: String) {
         signInJob?.cancel()
+        //API working in PostMan but not in android
         signInJob = scope.launch(Dispatchers.IO) {
             try {
                 val response = signInUseCase.signIn(email, password)

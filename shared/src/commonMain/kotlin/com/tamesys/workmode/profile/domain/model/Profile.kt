@@ -12,9 +12,12 @@ data class Profile(
     @SerialName("designation") val designation: String,
     @SerialName("email") val email: String,
 
-    val educations: List<Education> = listOf(),
-    val employments: List<Employment> = listOf(),
+    var educations: MutableList<Education> = mutableListOf(),
+    var employments: MutableList<Employment> = mutableListOf(),
+    val skillSets: List<SkillSet> = listOf(),
 
+    val interests: List<String> = listOf(),
+    val interestString: String?,
     @SerialName("phone") val phone: String,
     @SerialName("address") val address: String,
     @SerialName("nationality") val nationality: String,

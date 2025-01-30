@@ -20,6 +20,7 @@ import androidx.navigation.navArgument
 import com.tamesys.workmode.android.MyApplicationTheme
 import com.tamesys.workmode.profile.presentation.ProfileViewModel
 import com.rahbertheadvisor.android.ui.BottomNavigationBar
+import com.tamesys.workmode.android.home.Screen
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -48,8 +49,8 @@ class ProfileActivity: ComponentActivity() {
                     bottomBar = { BottomNavigationBar(navController = navController, bottomBarState) }
                 ) { padding ->
                     NavHost(modifier = Modifier.padding(padding),
-                        navController = navController, startDestination = Screen.AllProfiles.route) {
-                        composable(Screen.AllProfiles.route) {
+                        navController = navController, startDestination = Screen.Profiles.route) {
+                        composable(Screen.Profiles.route) {
                             bottomBarState.value = true
                             AllProfiles(navController, showSnack)
                             //Profiles(navController, showSnack)
@@ -65,7 +66,7 @@ class ProfileActivity: ComponentActivity() {
                             }
                         }
                         composable(
-                            Screen.AddProfile.route,
+                            Screen.ProfileAdd.route,
                             arguments = listOf(navArgument("id") { type = NavType.StringType})
                         ) { navEntry ->
                             navEntry.arguments?.getString("id")?.let { id->

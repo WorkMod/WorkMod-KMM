@@ -33,7 +33,7 @@ struct MainUIView: View {
                                     Button {
                                         navPathProfiles.append(AddProfileView.tag)
                                     } label: {
-                                        Label("New", systemImage: "info.circle").labelStyle(.titleAndIcon)
+                                        Label("New", systemImage: "plus.circle").labelStyle(.titleAndIcon)
                                     }
                                 }
                             }.navigationDestination(for: String.self) { path in

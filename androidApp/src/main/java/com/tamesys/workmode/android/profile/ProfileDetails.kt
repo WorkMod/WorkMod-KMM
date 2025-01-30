@@ -11,9 +11,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
@@ -32,10 +32,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.tamesys.workmode.android.common.ui.DialogOkCancel
+import com.tamesys.workmode.android.home.Screen
 import com.tamesys.workmode.common.BoolState
 import com.tamesys.workmode.profile.domain.model.Profile
 import com.tamesys.workmode.profile.presentation.DownloadProfileResult
@@ -82,13 +86,14 @@ fun ProfileDetails(navController: NavHostController,
                     Text(text = titleString.value)
                 },
                 navigationIcon = {
-                    IconButton(onClick = { }) {
-                        Icon(Icons.Filled.Menu,"")
+                    IconButton(onClick = { navController.navigateUp() }) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
                     }
                 },
                 actions = @Composable {
                     IconButton(onClick = {
-                        navController.navigate(Destination.AddProfile.route.replace(
+                        viewModel.clearProfile()
+                        navController.navigate(Screen.ProfileAdd.route.replace(
                             oldValue = "{id}",
                             newValue = profileId
                         ))
@@ -125,7 +130,7 @@ fun ProfileDetails(navController: NavHostController,
                 titleString.value = profileResult.profile?.title ?: ""
                 profileResult.profile?.let {profile ->
                     Card(modifier = Modifier
-                        .padding(16.dp)
+                        .padding(0.dp)
                         .fillMaxWidth()) {
                         Column(modifier = Modifier
                             .fillMaxWidth()
@@ -140,8 +145,16 @@ fun ProfileDetails(navController: NavHostController,
                                 EducationDetails(profile.educations)
                             }
                             Spacer(modifier = Modifier.height(4.dp))
+
+                            profile.interestString?.let { interests ->
+                                if (interests.isNotEmpty()) {
+                                    ProfileInterests(interests)
+                                }
+                            }
+                            //Add Skills and Interests section
                             ProfileFooter(profile)
-                            Button(onClick = {
+                            Button(modifier = Modifier.padding(8.dp, 8.dp, 8.dp, 16.dp)
+                                .align(Alignment.CenterHorizontally), onClick = {
                                 viewModel.downloadProfile(profileId, context.filesDir.path)
                             }) {
                                 Text("Download CV")
@@ -195,8 +208,29 @@ private fun ProfileHeader(profile: Profile) {
         horizontalAlignment = Alignment.CenterHorizontally) {
         Text(text = profile.name)
         Text(text = profile.designation)
-        Text(text = profile.email)
+        Text(text = profile.description)
     }
+}
+
+@Composable
+private fun ProfileInterests(interests: String) {
+    Column(modifier = Modifier.padding(16.dp, 0.dp)) {
+        Text(
+            modifier = Modifier.padding(6.dp),
+            text = "Interests",
+            fontSize = 18.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = Color.Black,
+        )
+        Text(
+            modifier = Modifier.padding(6.dp),
+            text = interests,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = Color.Black,
+        )
+    }
+
 }
 
 @Composable
@@ -206,8 +240,9 @@ private fun ProfileFooter(profile: Profile) {
         containerColor = Color.Green,)*/
     ) {
         Column(modifier = Modifier
-            .padding(16.dp)
+            .padding(20.dp, 8.dp)
             .fillMaxWidth()) {
+            Text(text = profile.email)
             Text(text = profile.phone)
             Text(text = profile.address)
             Text(text = profile.nationality)

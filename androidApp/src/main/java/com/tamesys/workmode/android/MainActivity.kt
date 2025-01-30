@@ -23,13 +23,16 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.tamesys.workmode.MainViewModel
 import com.tamesys.workmode.android.home.Screen
-import com.tamesys.workmode.android.profile.AddProfile
+import com.tamesys.workmode.android.profile.add.AddProfile
 import com.tamesys.workmode.android.profile.AllProfiles
 import com.tamesys.workmode.android.profile.ProfileDetails
 import com.tamesys.workmode.android.settings.Settings
 import com.tamesys.workmode.profile.presentation.ProfileViewModel
 import com.tamesys.workmode.android.auth.AuthActivity
 import com.rahbertheadvisor.android.ui.BottomNavigationBar
+import com.tamesys.workmode.android.profile.add.AddEducation
+import com.tamesys.workmode.android.profile.add.AddEmployment
+import com.tamesys.workmode.android.profile.add.AddInterests
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -103,6 +106,21 @@ class MainActivity : ComponentActivity() {
                             }
                             bottomBarState.value = false
 
+                        }
+                        composable(Screen.ProfileAddEmployment.route) {
+                            navEntry ->
+                            AddEmployment(navController, showSnack, profileViewModel)
+                            bottomBarState.value = false
+                        }
+                        composable(Screen.ProfileAddEducation.route) {
+                            navEntry ->
+                            AddEducation(navController, showSnack, profileViewModel)
+                            bottomBarState.value = false
+                        }
+                        composable(Screen.ProfileAddInterests.route) {
+                                navEntry ->
+                            AddInterests(navController, showSnack, profileViewModel)
+                            bottomBarState.value = false
                         }
                         composable(Screen.Jobs.route) {
                             bottomBarState.value = true

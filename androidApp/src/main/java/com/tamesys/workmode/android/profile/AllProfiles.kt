@@ -23,9 +23,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.tamesys.workmode.android.home.Screen
 import com.tamesys.workmode.profile.presentation.GetAllProfilesResult
 import com.tamesys.workmode.profile.presentation.ProfileViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -35,8 +35,6 @@ fun AllProfiles(navController: NavHostController,
          showSnack: (message: String) -> Unit,
          viewModel: ProfileViewModel = koinViewModel()
 ) {
-
-    val context = LocalContext.current
 
     val allProfiles by viewModel.getAllProfilesResult.collectAsState(GetAllProfilesResult())
 
@@ -48,7 +46,8 @@ fun AllProfiles(navController: NavHostController,
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    navController.navigate(Destination.AddProfile.route.replace(
+                    viewModel.clearProfile()
+                    navController.navigate(Screen.ProfileAdd.route.replace(
                         oldValue = "{id}",
                         newValue = "id"
                     ))
