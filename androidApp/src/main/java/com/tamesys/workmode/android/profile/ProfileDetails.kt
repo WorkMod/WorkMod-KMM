@@ -46,7 +46,6 @@ import com.tamesys.workmode.profile.presentation.DownloadProfileResult
 import com.tamesys.workmode.profile.presentation.GetProfileResult
 import com.tamesys.workmode.profile.presentation.ProfileViewModel
 import org.koin.androidx.compose.koinViewModel
-import kotlin.text.Typography.section
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -93,7 +92,7 @@ fun ProfileDetails(navController: NavHostController,
                 },
                 actions = @Composable {
                     IconButton(onClick = {
-                        viewModel.clearExperiences()
+                        viewModel.clearProfile()
                         navController.navigate(Screen.ProfileAdd.route.replace(
                             oldValue = "{id}",
                             newValue = profileId
@@ -241,7 +240,7 @@ private fun ProfileFooter(profile: Profile) {
         containerColor = Color.Green,)*/
     ) {
         Column(modifier = Modifier
-            .padding(16.dp, 8.dp)
+            .padding(20.dp, 8.dp)
             .fillMaxWidth()) {
             Text(text = profile.email)
             Text(text = profile.phone)

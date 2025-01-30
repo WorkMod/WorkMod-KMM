@@ -44,7 +44,7 @@ fun AddInterests(
     var input by remember {  mutableStateOf("") }
     val interestList = remember { mutableStateListOf<String>() }
     LaunchedEffect(Unit) {
-        interestList.addAll(viewModel.getCachedProfile()?.interests ?: listOf())
+        interestList.addAll(viewModel.interests.value)
     }
 
     //var interestList by remember { mutableStateOf(listOf<String>()) }
@@ -91,7 +91,8 @@ fun AddInterests(
             Button(modifier = Modifier.padding(8.dp)
                 .fillMaxWidth(),
                 onClick = {
-                   TODO() // Update interests in viewModel that should reflect in enxt screen
+                    viewModel.setInterests(interestList)
+                    navController.navigateUp()
                 }) { Text("Update Interests") }
         }
     }

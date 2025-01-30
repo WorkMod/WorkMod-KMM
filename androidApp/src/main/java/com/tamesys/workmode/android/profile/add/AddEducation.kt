@@ -93,7 +93,7 @@ fun AddEducation(
                             return@Button
                         }
 
-                        viewModel.addEducation(Education(
+                        viewModel.addNewEducation(Education(
                             id = "", title = educationTitle, school = educationSchool,
                             from = educationFrom, to = educationTo
                         )

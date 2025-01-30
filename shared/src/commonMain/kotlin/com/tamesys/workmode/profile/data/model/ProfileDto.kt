@@ -31,8 +31,8 @@ data class ProfileDto(
         name = this.name,
         designation = this.designation,
         email = this.email,
-        educations = this.educations.map { it.toEducation() },
-        employments = this.employments.map { it.toEmployment() },
+        educations = this.educations.map { it.toEducation() }.toMutableList(),
+        employments = this.employments.map { it.toEmployment() }.toMutableList(),
         skillSets = this.skillSets.map { it.toSkillSet() },
         interests = if (this.interests?.isNotEmpty() == true) {
             this.interests.split(",").map { it.trim() }

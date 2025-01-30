@@ -23,7 +23,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.tamesys.workmode.android.home.Screen
@@ -37,8 +36,6 @@ fun AllProfiles(navController: NavHostController,
          viewModel: ProfileViewModel = koinViewModel()
 ) {
 
-    val context = LocalContext.current
-
     val allProfiles by viewModel.getAllProfilesResult.collectAsState(GetAllProfilesResult())
 
     LaunchedEffect(Unit) {
@@ -49,7 +46,7 @@ fun AllProfiles(navController: NavHostController,
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    viewModel.clearExperiences()
+                    viewModel.clearProfile()
                     navController.navigate(Screen.ProfileAdd.route.replace(
                         oldValue = "{id}",
                         newValue = "id"

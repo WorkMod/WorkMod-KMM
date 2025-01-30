@@ -54,11 +54,14 @@ class ProfileViewModel(
     val downloadProfileResult = _downloadProfileResult.asSharedFlow()
     private var downloadProfileJob: Job? = null
 
-    private val _newEmploymentsResult = MutableStateFlow<List<Employment>>(listOf())
-    val newEmploymentsResult = _newEmploymentsResult.asStateFlow()
+    private val _employments = MutableStateFlow<List<Employment>>(listOf())
+    val employments = _employments.asStateFlow()
 
-    private val _newEducationResult = MutableStateFlow<List<Education>>(listOf())
-    val newEducationResult = _newEducationResult.asStateFlow()
+    private val _educations = MutableStateFlow<List<Education>>(listOf())
+    val educations = _educations.asStateFlow()
+
+    private val _interests = MutableStateFlow<List<String>>(listOf())
+    val interests = _interests.asStateFlow()
 
     fun getProfile(profileId: String) {
         getProfileJob?.cancel()
@@ -82,6 +85,16 @@ class ProfileViewModel(
     }
 
     fun getCachedProfile() = getProfileResult.replayCache[0].profile
+
+    fun loadFromProfile() {
+        if (_employments.value.isEmpty() && _educations.value.isEmpty()) {
+            _employments.value = getCachedProfile()?.employments ?: mutableListOf()
+            _educations.value = getCachedProfile()?.educations ?: mutableListOf()
+        }
+        if (_interests.value.isEmpty()) {
+            _interests.value = getCachedProfile()?.interests ?: mutableListOf()
+        }
+    }
 
     fun getAllProfiles() {
         getAllProfilesJob?.cancel()
@@ -232,27 +245,35 @@ class ProfileViewModel(
     }
 
     fun addEmployment(employment: Employment) {
-        val newList = newEmploymentsResult.replayCache[0] + listOf(employment)
-        scope.launch { _newEmploymentsResult.emit(newList) }
+        val newList = employments.replayCache[0] + listOf(employment)
+        scope.launch { _employments.emit(newList) }
     }
 
-    private fun clearEmployments() {
-        _newEmploymentsResult.value = listOf()
+    fun removeEmployment(index: Int) {
+        val newList = employments.replayCache[0].toMutableList()
+        newList.removeAt(index)
+        scope.launch { _employments.emit(newList) }
     }
 
-    fun addEducation(education: Education) {
-        val newList = newEducationResult.replayCache[0] + listOf(education)
-        scope.launch { _newEducationResult.emit(newList) }
+    fun addNewEducation(education: Education) {
+        val newList = educations.replayCache[0] + listOf(education)
+        scope.launch { _educations.emit(newList) }
     }
 
-    private fun clearEducations() {
-        _newEducationResult.value = listOf()
+    fun removeEducation(index: Int) {
+        val newList = educations.replayCache[0].toMutableList()
+        newList.removeAt(index)
+        scope.launch { _educations.emit(newList) }
     }
 
-    fun clearExperiences() {
-        clearEmployments()
-        clearEducations()
+    fun setInterests(interests: List<String>) {
+        _interests.value = interests
     }
 
+    fun clearProfile() {
+        _employments.value = listOf()
+        _educations.value = listOf()
+        _interests.value = listOf()
+    }
 
 }

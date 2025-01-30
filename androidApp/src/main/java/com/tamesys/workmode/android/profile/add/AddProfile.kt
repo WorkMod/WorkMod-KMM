@@ -46,10 +46,7 @@ import com.tamesys.workmode.android.home.Screen
 import com.tamesys.workmode.android.profile.EducationDetails
 import com.tamesys.workmode.android.profile.EmploymentDetails
 import com.tamesys.workmode.common.BoolState
-import com.tamesys.workmode.profile.domain.model.Education
-import com.tamesys.workmode.profile.domain.model.Employment
 import com.tamesys.workmode.profile.domain.model.SkillSet
-import com.tamesys.workmode.profile.presentation.GetProfileResult
 import com.tamesys.workmode.profile.presentation.ProfileViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -72,43 +69,33 @@ fun AddProfile(
     var address by remember { mutableStateOf("32 Selsdon Road") }
     var description by remember { mutableStateOf("I am an awesome iOS Developer") }
 
-    var employmentList by remember { mutableStateOf(listOf<Employment>()) }
-    var educationList by remember { mutableStateOf(listOf<Education>()) }
-    var skillSetList by remember { mutableStateOf(listOf<SkillSet>()) }
-    var interestList by remember { mutableStateOf(listOf<String>()) }
+    val employmentList by viewModel.employments.collectAsState()
+    val educationList by viewModel.educations.collectAsState()
 
-    val newEmployments by viewModel.newEmploymentsResult.collectAsState()
-    val newEducations by viewModel.newEducationResult.collectAsState()
+    var skillSetList by remember { mutableStateOf(listOf<SkillSet>()) }
+    val interestList by viewModel.interests.collectAsState()
+
 
     if (editProfileId != null) {
         LaunchedEffect(editProfileId) {
-            viewModel.getProfile(editProfileId)
+            viewModel.loadFromProfile()
         }
-        val profileResult by viewModel.getProfileResult.collectAsState(GetProfileResult())
-        if (profileResult.success) {
-            profileResult.profile?.let {
-                title = it.title
-                name = it.name
-                designation = it.designation
-                email = it.email
-                phone = it.phone
-                address = it.address
-                nationality = it.nationality
-                description = it.description
-                educationList = it.educations.toMutableList() + newEducations
-                employmentList = it.employments.toMutableList() + newEmployments
-                interestList = it.interests
-            }
+        viewModel.getCachedProfile()?.let {
+            title = it.title
+            name = it.name
+            designation = it.designation
+            email = it.email
+            phone = it.phone
+            address = it.address
+            nationality = it.nationality
+            description = it.description
         }
-    } else {
-        employmentList = newEmployments
-        educationList = newEducations
     }
 
     val addProfile by viewModel.addProfileResult.collectAsState(BoolState())
     if (addProfile.success) {
         showSnack("Profile added!")
-        navController.popBackStack()
+        navController.navigateUp()
     } else if (addProfile.error.isNotEmpty()) {
         showSnack(addProfile.error)
     }
@@ -170,9 +157,7 @@ fun AddProfile(
                     ) {
 
                         EmploymentDetails(employments = employmentList) { deleteIndex ->
-                            val newList = employmentList.toMutableList()
-                            newList.removeAt(deleteIndex)
-                            employmentList = newList
+                            viewModel.removeEmployment(deleteIndex)
                         }
                         Button(modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 8.dp), onClick = {
                             navController.navigate(Screen.ProfileAddEmployment.route)
@@ -184,9 +169,7 @@ fun AddProfile(
                             .padding(vertical = 2.dp))
 
                         EducationDetails(educations = educationList) { deleteIndex ->
-                            val newList = educationList.toMutableList()
-                            newList.removeAt(deleteIndex)
-                            educationList = newList
+                            viewModel.removeEducation(deleteIndex)
                         }
                         Button(modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 8.dp), onClick = {
                             navController.navigate(Screen.ProfileAddEducation.route)
@@ -225,7 +208,6 @@ fun AddProfile(
                     .padding(12.dp)
                     .align(Alignment.CenterHorizontally),
                     onClick = {
-                        showSnack.invoke("Hellooo!")
                         if (name.isBlank()) {
                             showSnack.invoke("Enter name!")
                         } else if (designation.isBlank()) {
