@@ -63,6 +63,9 @@ class ProfileViewModel(
     private val _interests = MutableStateFlow<List<String>>(listOf())
     val interests = _interests.asStateFlow()
 
+    private val _skills = MutableStateFlow<List<SkillSet>>(listOf())
+    val skills = _skills.asStateFlow()
+
     fun getProfile(profileId: String) {
         getProfileJob?.cancel()
         getProfileJob = scope.launch(Dispatchers.IO) {
@@ -93,6 +96,9 @@ class ProfileViewModel(
         }
         if (_interests.value.isEmpty()) {
             _interests.value = getCachedProfile()?.interests ?: mutableListOf()
+        }
+        if (_skills.value.isEmpty()) {
+            _skills.value = getCachedProfile()?.skillSets ?: mutableListOf()
         }
     }
 
@@ -266,6 +272,17 @@ class ProfileViewModel(
         scope.launch { _educations.emit(newList) }
     }
 
+    fun addSkillSet(skillSet: SkillSet) {
+        val newList = skills.replayCache[0] + listOf(skillSet)
+        scope.launch { _skills.emit(newList) }
+    }
+
+    fun removeSkillSet(index: Int) {
+        val newList = skills.replayCache[0].toMutableList()
+        newList.removeAt(index)
+        scope.launch { _skills.emit(newList) }
+    }
+
     fun setInterests(interests: List<String>) {
         _interests.value = interests
     }
@@ -274,6 +291,7 @@ class ProfileViewModel(
         _employments.value = listOf()
         _educations.value = listOf()
         _interests.value = listOf()
+        _skills.value = listOf()
     }
 
 }

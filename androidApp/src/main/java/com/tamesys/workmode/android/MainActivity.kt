@@ -33,6 +33,7 @@ import com.rahbertheadvisor.android.ui.BottomNavigationBar
 import com.tamesys.workmode.android.profile.add.AddEducation
 import com.tamesys.workmode.android.profile.add.AddEmployment
 import com.tamesys.workmode.android.profile.add.AddInterests
+import com.tamesys.workmode.android.profile.add.AddSkillSet
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -115,6 +116,11 @@ class MainActivity : ComponentActivity() {
                         composable(Screen.ProfileAddEducation.route) {
                             navEntry ->
                             AddEducation(navController, showSnack, profileViewModel)
+                            bottomBarState.value = false
+                        }
+                        composable(Screen.ProfileAddSkillSet.route) {
+                                navEntry ->
+                            AddSkillSet(navController, showSnack, profileViewModel)
                             bottomBarState.value = false
                         }
                         composable(Screen.ProfileAddInterests.route) {

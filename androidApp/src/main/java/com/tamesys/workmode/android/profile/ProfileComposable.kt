@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tamesys.workmode.profile.domain.model.Education
 import com.tamesys.workmode.profile.domain.model.Employment
+import com.tamesys.workmode.profile.domain.model.SkillSet
 
 @Composable
 internal fun EmploymentDetails(employments: List<Employment>, onDelete: ((index: Int) -> Unit)? = null) {
@@ -145,6 +146,73 @@ private fun EducationItem(education: Education, index: Int, onDelete: ((deleteIn
                 fontSize = 16.sp,
                 color = Color.DarkGray)
             Text(text = education.from + " - " + education.to,
+                fontSize = 14.sp,
+                color = Color(1, 53, 8, 255))
+        }
+        if (onDelete != null) {
+            IconButton(
+                onClick = {
+                    onDelete(index)
+                }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = null,
+                    tint = Color.Red
+                )
+            }
+        }
+
+    }
+}
+
+@Composable
+internal fun SkillSetDetails(skillSets: List<SkillSet>, onDelete: ((index: Int) -> Unit)? = null) {
+    Column(modifier = Modifier
+        .padding(16.dp)
+        .fillMaxWidth()) {
+        Text(modifier = Modifier.padding(6.dp),
+            text = "SkillSets",
+            fontSize = 18.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = Color.Black,
+            //textDecoration = TextDecoration.Underline
+        )
+        Card(colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+        )) {
+            Column(modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()) {
+                if (skillSets.isEmpty()) {
+                    Text("No SkillSets added!")
+                } else {
+                    for (i in skillSets.indices) {
+                        SkillSetItem(skillSet = skillSets[i], i, onDelete)
+                        if (i < skillSets.size - 1) {
+                            Divider(modifier = Modifier.height(6.dp).padding(vertical = 2.dp))
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SkillSetItem(skillSet: SkillSet, index: Int, onDelete: ((deleteIndex: Int) -> Unit)?) {
+    Row (modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically) {
+        Column {
+            Text(text = skillSet.title,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black)
+            Text(text = skillSet.description,
+                fontSize = 16.sp,
+                color = Color.DarkGray)
+            Text(text = skillSet.skills.joinToString(),
                 fontSize = 14.sp,
                 color = Color(1, 53, 8, 255))
         }

@@ -45,6 +45,7 @@ import androidx.navigation.NavHostController
 import com.tamesys.workmode.android.home.Screen
 import com.tamesys.workmode.android.profile.EducationDetails
 import com.tamesys.workmode.android.profile.EmploymentDetails
+import com.tamesys.workmode.android.profile.SkillSetDetails
 import com.tamesys.workmode.common.BoolState
 import com.tamesys.workmode.profile.domain.model.SkillSet
 import com.tamesys.workmode.profile.presentation.ProfileViewModel
@@ -72,7 +73,7 @@ fun AddProfile(
     val employmentList by viewModel.employments.collectAsState()
     val educationList by viewModel.educations.collectAsState()
 
-    var skillSetList by remember { mutableStateOf(listOf<SkillSet>()) }
+    val skillSetList by viewModel.skills.collectAsState()
     val interestList by viewModel.interests.collectAsState()
 
 
@@ -127,7 +128,7 @@ fun AddProfile(
                     .verticalScroll(rememberScrollState())
                     .align(Alignment.Center)
             ) {
-                Card(modifier = Modifier.fillMaxWidth()) {
+                Card(modifier = Modifier.fillMaxWidth().padding(top = 8.dp)) {
                     Column {
                         TextField(value = title,
                             label = { Text(text = "Profile title") },
@@ -179,7 +180,35 @@ fun AddProfile(
                     }
                 }
 
-                ProfileInterests(navController, interestList)
+                Divider(
+                    modifier = Modifier
+                        .width(IntrinsicSize.Min)
+                        .height(10.dp)
+                )
+
+                Card(modifier = Modifier.fillMaxWidth()) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+
+                        SkillSetDetails(skillSets = skillSetList) { deleteIndex ->
+                            viewModel.removeSkillSet(deleteIndex)
+                        }
+                        Button(modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 8.dp), onClick = {
+                            navController.navigate(Screen.ProfileAddSkillSet.route)
+                        }) {
+                            Text("Add SkillSet")
+                        }
+                        Divider(modifier = Modifier
+                            .height(6.dp)
+                            .padding(vertical = 2.dp))
+
+                        ProfileInterests(navController, interestList)
+                    }
+                }
+
+
 
                 Divider(
                     modifier = Modifier

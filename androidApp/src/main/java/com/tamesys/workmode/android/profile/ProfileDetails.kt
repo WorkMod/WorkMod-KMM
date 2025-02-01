@@ -146,6 +146,9 @@ fun ProfileDetails(navController: NavHostController,
                             }
                             Spacer(modifier = Modifier.height(4.dp))
 
+                            if (profile.skillSets.isNotEmpty()) {
+                                SkillSetDetails(profile.skillSets)
+                            }
                             profile.interestString?.let { interests ->
                                 if (interests.isNotEmpty()) {
                                     ProfileInterests(interests)
